@@ -4,10 +4,7 @@ import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
-import com.byoutline.eventcallback.events.DialogEvent;
-import com.byoutline.eventcallback.events.HideWaitFragmentEvent;
 import com.byoutline.eventcallback.events.ResponseEvent;
-import com.byoutline.eventcallback.events.ShowWaitFragmentEvent;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,59 +170,6 @@ public class EventCallbackBuilder<S, E> {
             addAll(value);
             return builder;
         }
-    }
-    
-    public EventCallbackBuilder<S, E> showWaitFragment() {
-        onCreate().postEvents(new ShowWaitFragmentEvent()).validBetweenSessions().asSticky();
-        HideWaitFragmentEvent hideEvent = new HideWaitFragmentEvent();
-        onSuccess().postEvents(hideEvent).validBetweenSessions().asSticky();
-        onError().postEvents(hideEvent).validBetweenSessions().asSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> postSessionOnlyEvents(Object... events) {
-        onSuccess().postEvents(events).validThisSessionOnly().notSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> onErrorPostSessionOnlyEvents(Object... events) {
-        onError().postEvents(events).validThisSessionOnly().notSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> onErrorPostMultiSessionEvents(Object... events) {
-        onError().postEvents(events).validBetweenSessions().notSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> onErrorPostValidationErrorEvent(ResponseEvent<E>... events) {
-        onError().postResponseEvents(events).validThisSessionOnly().asSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> postResponseResultBy(ResponseEvent<S>... events) {
-        onSuccess().postResponseEvents(events).validThisSessionOnly().asSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> postMultiSessionEvents(Object... events) {
-        onSuccess().postEvents(events).validBetweenSessions().notSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> postStickyEvents(Object... events) {
-        onSuccess().postEvents(events).validBetweenSessions().asSticky();
-        return this;
-    }
-
-    public EventCallbackBuilder<S, E> postDialogEvent(DialogEvent dialogEvent) {
-        return postStickyEvents(dialogEvent);
-    }
-
-    public EventCallbackBuilder<S, E> inProgressFlag(AtomicBoolean inProgressFlag) {
-        onSuccess().setAtomicBooleans(inProgressFlag).toFalse();
-        onError().setAtomicBooleans(inProgressFlag).toFalse();
-        return this;
     }
 
     public EventCallback<S, E> build() {
