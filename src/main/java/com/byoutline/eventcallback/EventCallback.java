@@ -35,11 +35,11 @@ import retrofit.client.Response;
  * - executing different code from {@link SuccessHandler} for 
  *   all calls that return matched class
  *  
- * Create instance by calling {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken, com.google.gson.reflect.TypeToken)}.
+ * Create instance by calling {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken)}.
  *
+ * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
  * @param <S> Type of response returned by server on success.
  * @param <E> Type of response returned by server on error.
- * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
  */
 public class EventCallback<S, E> implements Callback<S> {
 
@@ -109,16 +109,17 @@ public class EventCallback<S, E> implements Callback<S> {
      * }
      * ```
      * 
-     * @param <S>
-     * @param <E>
-     * @param config
-     * @param responseClass
-     * @param validationErrorTypeToken
-     * @return 
-    */
+     * @param <S> Type of response returned by server onSuccess
+     * @param <E> Type of response returned by server onError
+     * 
+     * @param config Shared configuration
+     * @param errorTypeToken TypeToken that provides information about expected
+     *        response returned by server
+     * @return Builder that assists in creating valid EventCallback in readable way.
+     */
     public static <S, E> EventCallbackBuilder<S, E> builder(@Nonnull CallbackConfig config,
-            @Nonnull TypeToken<E> validationErrorTypeToken) {
-        return new EventCallbackBuilder<>(config, validationErrorTypeToken);
+            @Nonnull TypeToken<E> errorTypeToken) {
+        return new EventCallbackBuilder<>(config, errorTypeToken);
     }
 
     @Override
@@ -135,6 +136,12 @@ public class EventCallback<S, E> implements Callback<S> {
         postHelper.executeResponseActions(onErrorActions, convertedError, isSameSession(), postNullResponse);
     }
 
+    /**
+     * Checks if currently we are during same session that we were during callback
+     * creation.
+     *
+     * @return True if we are still during same session, false otherwise. 
+     */
     private boolean isSameSession() {
         String sessionId = config.sessionIdProvider.get();
         if (callbackStartSessionId == null) {
@@ -143,6 +150,10 @@ public class EventCallback<S, E> implements Callback<S> {
         return callbackStartSessionId.equals(sessionId);
     }
 
+    /**
+     * Passes result to {@link SuccessHandler}s from {@link Callback}
+     * @param result response from the server that should be passed to listeners
+     */
     private void informSharedSuccessHandlers(S result) {
         for (Map.Entry<Class, SuccessHandler> handler : config.sharedSuccessHandlers.entrySet()) {
             if (handler.getKey().isAssignableFrom(result.getClass())) {
