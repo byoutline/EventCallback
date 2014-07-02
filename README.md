@@ -3,7 +3,7 @@ EventCallback
 EventCallback allows creating instances of [Retrofit](http://square.github.io/retrofit/) [callbacks](http://square.github.io/retrofit/javadoc/retrofit/Callback.html) using short readable syntax.
 
 Instead of creating anonymous classes manually (where you have to take care of not using parent class fields that can change by the time server response arrives)
-```code java
+```java
 new Callback<SuccessDTO>() {
 
     @Override
