@@ -12,17 +12,11 @@ repositories {
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
-configurations {
-    markdownDoclet
-}
-
 dependencies {
     compile 'javax.inject:javax.inject:1'
     compile 'com.google.code.findbugs:jsr305:2.0.+'
     compile 'com.squareup.retrofit:retrofit:1.5.0'
     compile 'org.apache.commons:commons-lang3:3.+'
-    
-    markdownDoclet 'ch.raffael.pegdown-doclet:pegdown-doclet:1.1.+'
    
     // For spock testing:
     compile 'org.codehaus.groovy:groovy-all:2.1.5'
@@ -30,11 +24,4 @@ dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.0-SNAPSHOT'
     testRuntime "cglib:cglib-nodep:2.2.2"          // allows mocking of classes (in addition to interfaces)
     testRuntime "org.objenesis:objenesis:1.2"    // allows mocking of classes without default constructor (together with CGLIB)
-}
-
-// markdown docs
-javadoc.options {
-    docletpath = configurations.markdownDoclet.files.asType(List)   
-    doclet = "ch.raffael.doclets.pegdown.PegdownDoclet"
-    addStringOption("parse-timeout", "10")
 }

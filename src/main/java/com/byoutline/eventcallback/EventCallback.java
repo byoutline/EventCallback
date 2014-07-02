@@ -17,24 +17,25 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * ## Callback that can be safely called from fragments and activities.
+ * <h2>Callback that can be safely called from fragments and activities.</h2>
  *
  * Can be configured to execute actions during following steps:
- *
- * - onSuccess (when call was successful)
- * - onError (when call failed)
- * - onCreation (when this event is created)
- * 
+ * <ul>
+ *   <li> onSuccess (when call was successful) </li>
+ *   <li> onError (when call failed) </li>
+ *   <li> onCreation (when this event is created) </li>
+ * </ul>
+ * <br/>
  * Supported actions:
- *
- * - posting events (sticky and not sticky) to {@link Bus}
- * - posting {@link ResponseEvent}s that have server response set 
- *   (available only during onSuccess and onError steps since there is nothing 
- *   to return on creation)
- * - setting {@link AtomicBoolean} to requested value
- * - executing different code from {@link SuccessHandler} for 
- *   all calls that return matched class
- *  
+ * <ul>
+ *   <li> posting events (sticky and not sticky) to {@link Bus} </li>
+ *   <li> posting {@link ResponseEvent}s that have server response set
+ *   (available only during onSuccess and onError steps since there is nothing  
+ *   to return on creation) </li>
+ *   <li> setting {@link AtomicBoolean} to requested value </li>
+ *   <li> executing different code from {@link SuccessHandler} for 
+ *   all calls that return matched class </li>
+ * </ul> 
  * Create instance by calling {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken)}.
  *
  * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
@@ -95,19 +96,19 @@ public class EventCallback<S, E> implements Callback<S> {
      * to wrap this call in project.
      * For example:
      * 
-     * ``` java
-     * class MyEventCallback<S> {
-     *
+     * <pre><code class="java">
+     * class MyEventCallback&lt;S&gt; {
+     *     
      *     CallbackConfig config = injected;
-     *     private EventCallbackBuilder<S, MyHandledErrorMsg> builder() {
-     *         return EventCallback.builder(config, new TypeToken<MyHandledErrorMsg>(){});
+     *     private EventCallbackBuilder&lt;S, MyHandledErrorMsg&gt; builder() {
+     *         return EventCallback.builder(config, new TypeToken&lt;MyHandledErrorMsg&gt;(){});
      *     }
      * 
-     *     public static <S> EventCallbackBuilder<S, MyHandledErrorMsg> ofType() {
-     *         return new MyEventCallback<S>().builder(responseType);
+     *     public static &lt;S&gt; EventCallbackBuilder&lt;S, MyHandledErrorMsg&gt; ofType() {
+     *         return new MyEventCallback&lt;S&gt;().builder(responseType);
      *     }
      * }
-     * ```
+     * </code></pre>
      * 
      * @param <S> Type of response returned by server onSuccess
      * @param <E> Type of response returned by server onError
