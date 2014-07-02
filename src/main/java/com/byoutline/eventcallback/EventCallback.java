@@ -1,6 +1,5 @@
 package com.byoutline.eventcallback;
 
-import com.byoutline.eventcallback.events.ResponseEvent;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.EventPoster;
@@ -161,5 +160,15 @@ public class EventCallback<S, E> implements Callback<S> {
                 handler.getValue().onCallSuccess(result);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "EventCallback{" + "config=" + config + ",\n"
+                + "validationErrorTypeToken=" + validationErrorTypeToken + ",\n"
+                + "callbackStartSessionId=" + callbackStartSessionId + ",\n"
+                + "onCreateActions=" + onCreateActions + ",\n"
+                + "onSuccessActions=" + onSuccessActions + ",\n"
+                + "onErrorActions=" + onErrorActions + '}';
     }
 }

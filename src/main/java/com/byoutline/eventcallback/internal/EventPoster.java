@@ -5,7 +5,7 @@ import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.Bus;
-import com.byoutline.eventcallback.events.ResponseEvent;
+import com.byoutline.eventcallback.ResponseEvent;
 
 /**
  *

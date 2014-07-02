@@ -20,4 +20,9 @@ public class AtomicBooleanSetter {
     public void setRequestedValue() {
         bool.set(requestedValue);
     }
+
+    @Override
+    public String toString() {
+        return "AtomicBooleanSetter{" + "bool=" + bool + ", requestedValue=" + requestedValue + '}';
+    }
 }

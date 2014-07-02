@@ -4,7 +4,6 @@ import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
-import com.byoutline.eventcallback.events.ResponseEvent;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Arrays;

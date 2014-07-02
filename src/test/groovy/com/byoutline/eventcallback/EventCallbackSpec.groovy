@@ -1,132 +1,94 @@
 package com.byoutline.eventcallback
 
-import com.byoutline.eventcallback.events.ResponseEvent
+import com.byoutline.eventcallback.ResponseEvent
+import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter
+import com.byoutline.eventcallback.internal.actions.CreateEvents
+import com.byoutline.eventcallback.internal.actions.ResultEvents
+import com.byoutline.eventcallback.internal.actions.ScheduledActions
 import javax.inject.Provider
+import com.google.gson.reflect.TypeToken
 import retrofit.Callback
 import retrofit.RetrofitError
+import spock.lang.Shared
+import spock.lang.Unroll
 
 /**
  *
  * @author Sebastian Kacprzak <nait at naitbit.com> on 27.06.14.
  */
 class EventCallbackSpec extends spock.lang.Specification {
-    Bus bus;
+    @Shared
+    String event = "event"
+    Bus bus
+    
     def setup() {
         bus = Mock()
     }
-       
-    def "onSuccess should post sessionOnly events in same session"() {
-        given:
-        Callback<String, String> cb = MockFactory.getSameSessionBuilder(bus)
-        .postSessionOnlyEvents("success")
-        .build();
-        
+    
+    @Unroll
+    def "onCreate should post #pC times and postSticky #pSC times for callback: #cb"() {
         when:
+        cbb.config.bus.impl = bus
+        cbb.build()
+        
+        then:
+        pC  * bus.post(_) >> { assert it[0] == event }
+        pSC * bus.postSticky(_) >> { assert it[0] == event }
+        
+        where:
+        pC | pSC | cbb
+        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().notSticky()
+        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions().notSticky()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().notSticky()
+        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().asSticky()
+        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions().asSticky()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().asSticky()
+    }
+    
+    @Unroll
+    def "onSuccess should post ion#pC times and postSticky #pSC times for callback: #cb"() {
+        when:
+        cb.config.bus.impl = bus
         cb.success("s", null)
         
         then:
-        1 * bus.post("success")
-        0 * bus.postSticky(_)
+        pC  * bus.post(_) >> { assert it[0] == event }
+        pSC * bus.postSticky(_) >> { assert it[0] == event }
+        
+        where:
+        pC | pSC | cb
+        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().notSticky().build()
+        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().notSticky().build()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().notSticky().build()
+        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().asSticky().build()
+        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().asSticky().build()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().asSticky().build()
     }
     
-    def "onSuccess should post multisession events in same session"() {
-        given:
-        Callback<String, String> cb = MockFactory.getSameSessionBuilder(bus)
-        .postMultiSessionEvents("success")
-        .build();
-        
-        when:
-        cb.success("s", null)
-        
-        then:
-        1 * bus.post("success")
-        0 * bus.postSticky(_)
-    }
-    
-    def "onSuccess should post multisession events between sessions"() {
-        given:
-        Callback<String, String> cb = MockFactory.getMultiSessionBuilder(bus)
-        .postMultiSessionEvents("success")
-        .build();
-        
-        when:
-        cb.success("s", null)
-        
-        then:
-        1 * bus.post("success")
-        0 * bus.postSticky(_)
-    }
-    
-    def "onSuccess should NOT post sessionOnly events between sessions"() {
-        given:
-        Callback<String, String> cb = MockFactory.getMultiSessionBuilder(bus)
-        .postSessionOnlyEvents("success")
-        .build();
-        
-        when:
-        cb.success("s", null)
-        
-        then:
-        0 * bus.post(_)
-        0 * bus.postSticky(_)
-    }
-    
-    def "onSuccess should post sticky events between sessions"() {
-        given:
-        Callback<String, String> cb = MockFactory.getMultiSessionBuilder(bus)
-        .postStickyEvents("success")
-        .build();
-        
-        when:
-        cb.success("s", null)
-        
-        then:
-        0 * bus.post(_)
-        1 * bus.postSticky("success")
-    }
-    
-    def "onError should post validationErrorEvent during same session"() {
+    @Unroll
+    def "onError should post #pC times and postSticky #pSC times for callback: #cb"() {
         given:
         RetrofitError retrofitError = GroovyMock(RetrofitError)
         retrofitError.isNetworkError() >> false
-        retrofitError.getBodyAs(_) >> "error"
-        retrofitError.getBody() >> "error"
-        
-        StringResponseEvent event = new StringResponseEvent()
-        
-        Callback<String, String> cb = MockFactory.getSameSessionBuilder(bus)
-        .onErrorPostValidationErrorEvent(event)
-        .build();
+        retrofitError.getBodyAs(_) >> event
+        retrofitError.getBody() >> event
         
         when:
+        cb.config.bus.impl = bus
         cb.failure(retrofitError)
         
         then:
-        event.response == "error"
-        0 * bus.post(_)
-        1 * bus.postSticky(event)
-    }
-    
-    def "onError should NOT post validationErrorEvent between sessions"() {
-        given:
-        RetrofitError retrofitError = GroovyMock(RetrofitError)
-        retrofitError.isNetworkError() >> false
-        retrofitError.getBodyAs(_) >> "error"
-        retrofitError.getBody() >> "error"
+        pC  * bus.post(_) >> { assert it[0] == event }
+        pSC * bus.postSticky(_) >> { assert it[0] == event }
         
-        StringResponseEvent event = new StringResponseEvent()
-        
-        Callback<String, String> cb = MockFactory.getMultiSessionBuilder(bus)
-        .onErrorPostValidationErrorEvent(event)
-        .build();
-        
-        when:
-        cb.failure(retrofitError)
-        
-        then:
-        event.response == null
-        0 * bus.post(_)
-        0 * bus.postSticky(_)
+        where:
+        pC | pSC | cb
+        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().notSticky().build()
+        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().notSticky().build()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().notSticky().build()
+        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().asSticky().build()
+        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().asSticky().build()
+        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().asSticky().build()
     }
 }
 

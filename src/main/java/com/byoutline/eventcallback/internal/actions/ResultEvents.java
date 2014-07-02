@@ -1,7 +1,7 @@
 package com.byoutline.eventcallback.internal.actions;
 
 import com.byoutline.eventcallback.EventCallback;
-import com.byoutline.eventcallback.events.ResponseEvent;
+import com.byoutline.eventcallback.ResponseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -34,5 +34,9 @@ public class ResultEvents<R> extends CreateEvents {
         Validate.noNullElements(resultEvents);
         Validate.noNullElements(resultStickyEvents);
     }
-    
+
+    @Override
+    public String toString() {
+        return "ResultEvents{" + "resultEvents=" + resultEvents + ", resultStickyEvents=" + resultStickyEvents + '}' + super.toString();
+    }
 }

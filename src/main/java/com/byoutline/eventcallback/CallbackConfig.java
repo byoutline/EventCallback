@@ -82,4 +82,9 @@ public class CallbackConfig {
         this.sessionIdProvider = sessionIdProvider;
         this.sharedSuccessHandlers = sharedSuccessHandlers;
     }
+
+    @Override
+    public String toString() {
+        return "CallbackConfig{" + "debug=" + debug + ", bus=" + bus + ", sessionIdProvider=" + sessionIdProvider + ", sharedSuccessHandlers=" + sharedSuccessHandlers + '}';
+    }
 }

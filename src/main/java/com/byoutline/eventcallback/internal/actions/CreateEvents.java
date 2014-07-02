@@ -28,4 +28,9 @@ public class CreateEvents {
         Validate.noNullElements(events);
         Validate.noNullElements(stickyEvents);
     }
+
+    @Override
+    public String toString() {
+        return "CreateEvents{" + "events=" + events + ", stickyEvents=" + stickyEvents + '}';
+    }
 }

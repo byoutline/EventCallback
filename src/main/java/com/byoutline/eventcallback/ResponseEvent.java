@@ -1,4 +1,4 @@
-package com.byoutline.eventcallback.events;
+package com.byoutline.eventcallback;
 
 /**
  * Event that will have server response set.

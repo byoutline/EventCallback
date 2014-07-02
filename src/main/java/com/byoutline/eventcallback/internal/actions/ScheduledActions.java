@@ -28,4 +28,9 @@ public class ScheduledActions<T extends CreateEvents> {
         multiSessionEvents.validate();
         Validate.noNullElements(boolsToSet);
     }
+
+    @Override
+    public String toString() {
+        return "ScheduledActions{" + "sessionOnlyEvents=" + sessionOnlyEvents + ", multiSessionEvents=" + multiSessionEvents + ", boolsToSet=" + boolsToSet + '}';
+    }
 }
