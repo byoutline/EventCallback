@@ -23,7 +23,7 @@ new Callback<SuccessDTO>() {
 };
 ```
 you can use EventCallback like this:
-```code java
+```java
 EventCallback.<SuccessDTO>builder(config, new TypeToken<RestErrorWithMsg>(){})
     .onSuccess().postEvents(new MyEvent(), new SuccessEvent()).validThisSessionOnly().notSticky()
     .onError().postResponseEvents(new LoginValidationFailedEvent()).validBetweenSessions().asSticky()
