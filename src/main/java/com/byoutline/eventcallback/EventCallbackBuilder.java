@@ -26,7 +26,7 @@ public class EventCallbackBuilder<S, E> {
     private final ScheduledActions<ResultEvents<S>> onSuccessActions = new ScheduledActions<>(new ResultEvents<S>(), new ResultEvents<S>(), new ArrayList<AtomicBooleanSetter>());
     private final ScheduledActions<ResultEvents<E>> onErrorActions = new ScheduledActions<>(new ResultEvents<E>(), new ResultEvents<E>(), new ArrayList<AtomicBooleanSetter>());
 
-    protected EventCallbackBuilder(@Nonnull CallbackConfig config,
+    public EventCallbackBuilder(@Nonnull CallbackConfig config,
             @Nonnull TypeToken<E> validationErrorTypeToken) {
         this.config = config;
         this.validationErrorTypeToken = validationErrorTypeToken;
