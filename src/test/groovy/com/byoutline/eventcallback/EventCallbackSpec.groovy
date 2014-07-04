@@ -19,7 +19,7 @@ import spock.lang.Unroll
 class EventCallbackSpec extends spock.lang.Specification {
     @Shared
     String event = "event"
-    Bus bus
+    IBus bus
     
     def setup() {
         bus = Mock()

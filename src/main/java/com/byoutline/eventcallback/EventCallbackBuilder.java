@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Creates complete instance of {@link EventCallback} using fluent syntax.
- * 
+ *
  * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
  */
 public class EventCallbackBuilder<S, E> {
@@ -32,20 +32,21 @@ public class EventCallbackBuilder<S, E> {
         this.validationErrorTypeToken = validationErrorTypeToken;
         this.callbackStartSessionId = config.sessionIdProvider.get();
     }
-    
+
     public ActionsSetter<S, E> onCreate() {
         return new ActionsSetter<>(onCreateActions, this);
     }
-    
+
     public ResultEventsSetter<S, S, E> onSuccess() {
         return new ResultEventsSetter<>(onSuccessActions, this);
     }
-    
+
     public ResultEventsSetter<E, S, E> onError() {
         return new ResultEventsSetter<>(onErrorActions, this);
     }
-    
+
     public static class ActionsSetter<S, E> {
+
         private final ScheduledActions<? extends CreateEvents> actions;
         protected final EventCallbackBuilder<S, E> builder;
 
@@ -54,29 +55,31 @@ public class EventCallbackBuilder<S, E> {
             this.builder = builder;
         }
 
-        public ExpireSetter<Object, S, E> postEvents(Object...events){
+        public ExpireSetter<Object, S, E> postEvents(Object... events) {
             return new ExpireSetter(actions, Arrays.asList(events), builder);
         }
-        
-        public BoolSetter<S,E> setAtomicBooleans(AtomicBoolean...booleans) {
+
+        public BoolSetter<S, E> setAtomicBooleans(AtomicBoolean... booleans) {
             return new BoolSetter<>(actions, Arrays.asList(booleans), builder);
         }
     }
-    
+
     public static class ResultEventsSetter<R, S, E> extends ActionsSetter {
+
         private final ScheduledActions<ResultEvents<R>> actions;
 
         private ResultEventsSetter(ScheduledActions<ResultEvents<R>> actions, EventCallbackBuilder<S, E> builder) {
             super(actions, builder);
             this.actions = actions;
         }
-        
-        public ResultExpireSetter<R, S, E> postResponseEvents(ResponseEvent<R>...events) {
+
+        public ResultExpireSetter<R, S, E> postResponseEvents(ResponseEvent<R>... events) {
             return new ResultExpireSetter(actions, Arrays.asList(events), builder);
         }
     }
-    
+
     public static class ExpireSetter<R, S, E> {
+
         private final ScheduledActions<? extends CreateEvents> actions;
         private final List<R> argEvents;
         private final EventCallbackBuilder<S, E> builder;
@@ -90,13 +93,14 @@ public class EventCallbackBuilder<S, E> {
         public StickySetter<R, S, E> validThisSessionOnly() {
             return new StickySetter<>(argEvents, actions.sessionOnlyEvents.events, actions.sessionOnlyEvents.stickyEvents, builder);
         }
-        public StickySetter<R, S, E>  validBetweenSessions(){
+
+        public StickySetter<R, S, E> validBetweenSessions() {
             return new StickySetter<>(argEvents, actions.multiSessionEvents.events, actions.multiSessionEvents.stickyEvents, builder);
         }
     }
-    
+
     public static class ResultExpireSetter<R, S, E> {
-        
+
         private final ScheduledActions<ResultEvents<R>> actions;
         private final List<ResponseEvent<R>> argEvents;
         private final EventCallbackBuilder<S, E> builder;
@@ -110,13 +114,14 @@ public class EventCallbackBuilder<S, E> {
         public StickySetter<ResponseEvent<R>, S, E> validThisSessionOnly() {
             return new StickySetter<>(argEvents, actions.sessionOnlyEvents.resultEvents, actions.sessionOnlyEvents.resultStickyEvents, builder);
         }
-        
-        public StickySetter<ResponseEvent<R>, S, E> validBetweenSessions(){
+
+        public StickySetter<ResponseEvent<R>, S, E> validBetweenSessions() {
             return new StickySetter<>(argEvents, actions.multiSessionEvents.resultEvents, actions.multiSessionEvents.resultStickyEvents, builder);
         }
     }
-    
+
     public static class StickySetter<R, S, E> {
+
         private final List<R> argEvents;
         private final List<R> events;
         private final List<R> stickyEvents;
@@ -129,18 +134,35 @@ public class EventCallbackBuilder<S, E> {
             this.builder = builder;
         }
 
+        /**
+         * Events will be posted by {@link IBus#postSticky(java.lang.Object)}.
+         *
+         * @return builder for chaining.
+         * @deprecated Although occasionally useful sticky events were sometimes
+         * abused(fe: leaking views in android). Therefore since 1.1.0 it is
+         * advised to always use {@link #notSticky()} instead. In future
+         * versions methods asSticky and notSticky may be removed.
+         */
+        @Deprecated
         public EventCallbackBuilder<S, E> asSticky() {
             stickyEvents.addAll(argEvents);
             return builder;
         }
-        
+
+        /**
+         * Events will be posted by {@link IBus#post(java.lang.Object)}. In
+         * future versions this method may be removed(and used by default).
+         *
+         * @return builder for chaining
+         */
         public EventCallbackBuilder<S, E> notSticky() {
             events.addAll(argEvents);
             return builder;
         }
     }
-    
+
     public static class BoolSetter<S, E> {
+
         private final ScheduledActions<? extends CreateEvents> actions;
         private final List<AtomicBoolean> booleans;
         private final EventCallbackBuilder<S, E> builder;
@@ -150,21 +172,21 @@ public class EventCallbackBuilder<S, E> {
             this.booleans = booleans;
             this.builder = builder;
         }
-        
+
         private void addAll(boolean value) {
-            for(AtomicBoolean bool: booleans) {
+            for (AtomicBoolean bool : booleans) {
                 actions.boolsToSet.add(new AtomicBooleanSetter(bool, value));
             }
         }
-        
+
         public EventCallbackBuilder<S, E> toFalse() {
             return toValue(false);
         }
-        
+
         public EventCallbackBuilder<S, E> toTrue() {
             return toValue(true);
         }
-        
+
         public EventCallbackBuilder<S, E> toValue(boolean value) {
             addAll(value);
             return builder;
