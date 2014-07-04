@@ -14,7 +14,7 @@ import javax.inject.Provider;
 public class CallbackConfig {
 
     final boolean debug;
-    final Bus bus;
+    final IBus bus;
     final Provider<String> sessionIdProvider;
     final Map<Class, SuccessHandler> sharedSuccessHandlers;
 
@@ -26,7 +26,7 @@ public class CallbackConfig {
      *
      * @param bus bus on which callback events will be posted.
      */
-    public CallbackConfig(@Nonnull Bus bus) {
+    public CallbackConfig(@Nonnull IBus bus) {
         this(false, bus);
     }
 
@@ -39,7 +39,7 @@ public class CallbackConfig {
      * @param debug true if extra checks should be on.
      * @param bus bus on which callback events will be posted.
      */
-    public CallbackConfig(boolean debug, @Nonnull Bus bus) {
+    public CallbackConfig(boolean debug, @Nonnull IBus bus) {
         this(debug, bus, new Provider<String>() {
 
             @Override
@@ -58,7 +58,7 @@ public class CallbackConfig {
      * @param sessionIdProvider provides information about current session.
      * If same string is returned from two cals it is considered to be same session.
      */
-    public CallbackConfig(boolean debug, @Nonnull Bus bus,
+    public CallbackConfig(boolean debug, @Nonnull IBus bus,
             @Nonnull Provider<String> sessionIdProvider) {
         this(debug, bus, sessionIdProvider, Collections.EMPTY_MAP);
     }
@@ -74,7 +74,7 @@ public class CallbackConfig {
      * {@link SuccessHandler}s so common operation for given result type can
      * be handled globally in whole project.
      */
-    public CallbackConfig(boolean debug, @Nonnull Bus bus,
+    public CallbackConfig(boolean debug, @Nonnull IBus bus,
             @Nonnull Provider<String> sessionIdProvider,
             @Nonnull Map<Class, SuccessHandler> sharedSuccessHandlers) {
         this.debug = debug;

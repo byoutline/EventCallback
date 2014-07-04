@@ -4,7 +4,7 @@ import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
-import com.byoutline.eventcallback.Bus;
+import com.byoutline.eventcallback.IBus;
 import com.byoutline.eventcallback.ResponseEvent;
 
 /**
@@ -13,9 +13,9 @@ import com.byoutline.eventcallback.ResponseEvent;
  */
 public class EventPoster {
 
-    private final Bus bus;
+    private final IBus bus;
 
-    public EventPoster(Bus bus) {
+    public EventPoster(IBus bus) {
         this.bus = bus;
     }
 

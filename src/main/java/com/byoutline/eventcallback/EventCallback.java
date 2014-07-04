@@ -27,7 +27,7 @@ import retrofit.client.Response;
  * <br/>
  * Supported actions:
  * <ul>
- *   <li> posting events (sticky and not sticky) to {@link Bus} </li>
+ *   <li> posting events (sticky and not sticky) to {@link IBus} </li>
  *   <li> posting {@link ResponseEvent}s that have server response set
  *   (available only during onSuccess and onError steps since there is nothing  
  *   to return on creation) </li>

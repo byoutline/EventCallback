@@ -5,7 +5,7 @@ package com.byoutline.eventcallback;
  * 
  * @author Sebastian Kacprzak <nait at naitbit.com>
  */
-public interface Bus {
+public interface IBus {
     
     void post(Object event);
     void postSticky(Object event);
