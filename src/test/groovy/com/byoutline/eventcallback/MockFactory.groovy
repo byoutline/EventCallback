@@ -2,9 +2,14 @@ package com.byoutline.eventcallback
 
 import com.google.gson.reflect.TypeToken
 import javax.inject.Provider
+import retrofit.Callback
+
+static Provider<String> getSameSessionIdProvider() {
+    return { return "sessionId" } as Provider<String>
+}
 
 static CallbackConfig getSameSessionConfig(IBus bus) {
-    def sessionIdProvider = { return "sessionId" } as Provider<String>
+    def sessionIdProvider = getSameSessionIdProvider()
     return getConfig(sessionIdProvider, bus)
 }
 
@@ -32,6 +37,13 @@ static EventCallbackBuilder<String, String> getMultiSessionBuilder(IBus bus) {
 
 static EventCallbackBuilder<String, String> getEventCallbackBuilder(CallbackConfig config) {
     return EventCallback.builder(config, new TypeToken<String>() {})
+}
+
+static Callback<String> getEventCallbackWithSucccessHandler(IBus bus, SuccessHandler<String> handler) {
+        def sharedSuccessHandlers = [(String.class) : handler]
+        def sessionIdProvider = getSameSessionIdProvider()
+        def config = new CallbackConfig(true, bus, sessionIdProvider, sharedSuccessHandlers)
+        return EventCallback.builder(config, new TypeToken<String>() {}).build()
 }
 
 class StubBus implements IBus {

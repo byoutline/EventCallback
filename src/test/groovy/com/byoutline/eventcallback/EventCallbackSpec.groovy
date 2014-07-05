@@ -90,6 +90,25 @@ class EventCallbackSpec extends spock.lang.Specification {
         0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().asSticky().build()
         0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().asSticky().build()
     }
+    
+    @Unroll
+    def "shared success handlers should be called #callCount when server returns #response"() {
+        given:
+        SuccessHandler<String> handler = Mock()
+        def cb = MockFactory.getEventCallbackWithSucccessHandler(bus, handler)
+        
+        when:
+        cb.success(response, null)
+        
+        then:
+        callCount * handler.onCallSuccess(_)
+        
+        where:
+        callCount   | response
+        0           | null
+        0           | 32
+        1           | "string response"
+    }
 }
 
 class StringResponseEvent implements ResponseEvent<String> {
