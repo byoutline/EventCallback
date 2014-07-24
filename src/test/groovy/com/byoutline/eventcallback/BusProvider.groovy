@@ -10,9 +10,5 @@ class BusProvider implements IBus {
     void post(Object o) {
         impl.post(o)
     }
-    
-    void postSticky(Object o) {
-        impl.postSticky(o)
-    }
 }
 

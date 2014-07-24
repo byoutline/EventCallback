@@ -8,5 +8,4 @@ package com.byoutline.eventcallback;
 public interface IBus {
     
     void post(Object event);
-    void postSticky(Object event);
 }

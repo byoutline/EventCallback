@@ -36,14 +36,9 @@ static EventCallbackBuilder<String, String> getEventCallbackBuilder(CallbackConf
 
 class StubBus implements IBus {
     int postCount = 0
-    int postStickyCount = 0
     
     void post(Object o) {
         postCount++
-    }
-    
-    void postSticky(Object o) {
-        postStickyCount++
     }
 }
 

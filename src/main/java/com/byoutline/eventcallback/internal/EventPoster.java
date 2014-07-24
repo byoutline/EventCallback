@@ -45,7 +45,6 @@ public class EventPoster {
 
     private void postAll(CreateEvents events) {
         postAll(events.events);
-        postAllSticky(events.stickyEvents);
     }
 
     private void postAll(Iterable events) {
@@ -54,32 +53,17 @@ public class EventPoster {
         }
     }
 
-    private void postAllSticky(Iterable events) {
-        for (Object event : events) {
-            bus.postSticky(event);
-        }
-    }
-
     private <R> void postResponseEvents(boolean sameSession, boolean postNullResponse, R response, ScheduledActions<ResultEvents<R>> actions) {
         if (sameSession) {
             postResponseEvents(response, actions.sessionOnlyEvents.resultEvents);
-            postStickyResponseEvents(response, actions.sessionOnlyEvents.resultStickyEvents);
         }
         postResponseEvents(response, actions.multiSessionEvents.resultEvents);
-        postStickyResponseEvents(response, actions.multiSessionEvents.resultStickyEvents);
     }
 
     private <R> void postResponseEvents(R response, Iterable<ResponseEvent<R>> events) {
         for (ResponseEvent<R> event : events) {
             event.setResponse(response);
             bus.post(event);
-        }
-    }
-
-    private <R> void postStickyResponseEvents(R response, Iterable<ResponseEvent<R>> events) {
-        for (ResponseEvent<R> event : events) {
-            event.setResponse(response);
-            bus.postSticky(event);
         }
     }
 }

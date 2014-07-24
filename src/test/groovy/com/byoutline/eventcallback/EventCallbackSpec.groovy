@@ -26,47 +26,39 @@ class EventCallbackSpec extends spock.lang.Specification {
     }
     
     @Unroll
-    def "onCreate should post #pC times and postSticky #pSC times for callback: #cb"() {
+    def "onCreate should post #pC times for callback: #cbb"() {
         when:
         cbb.config.bus.impl = bus
         cbb.build()
         
         then:
         pC  * bus.post(_) >> { assert it[0] == event }
-        pSC * bus.postSticky(_) >> { assert it[0] == event }
         
         where:
-        pC | pSC | cbb
-        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().notSticky()
-        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions().notSticky()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().notSticky()
-        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().asSticky()
-        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions().asSticky()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly().asSticky()
+        pC | cbb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly()
+        1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly()
     }
     
     @Unroll
-    def "onSuccess should post ion#pC times and postSticky #pSC times for callback: #cb"() {
+    def "onSuccess should post ion#pC times for callback: #cb"() {
         when:
         cb.config.bus.impl = bus
         cb.success("s", null)
         
         then:
         pC  * bus.post(_) >> { assert it[0] == event }
-        pSC * bus.postSticky(_) >> { assert it[0] == event }
         
         where:
-        pC | pSC | cb
-        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().notSticky().build()
-        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().notSticky().build()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().notSticky().build()
-        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().asSticky().build()
-        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().asSticky().build()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().asSticky().build()
+        pC | cb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().build()
     }
     
     @Unroll
-    def "onError should post #pC times and postSticky #pSC times for callback: #cb"() {
+    def "onError should post #pC times for callback: #cb"() {
         given:
         RetrofitError retrofitError = GroovyMock(RetrofitError)
         retrofitError.isNetworkError() >> false
@@ -79,16 +71,12 @@ class EventCallbackSpec extends spock.lang.Specification {
         
         then:
         pC  * bus.post(_) >> { assert it[0] == event }
-        pSC * bus.postSticky(_) >> { assert it[0] == event }
         
         where:
-        pC | pSC | cb
-        1  | 0   | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().notSticky().build()
-        1  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().notSticky().build()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().notSticky().build()
-        0  | 1   | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().asSticky().build()
-        0  | 1   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().asSticky().build()
-        0  | 0   | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().asSticky().build()
+        pC | cb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().build()
     }
 }
 

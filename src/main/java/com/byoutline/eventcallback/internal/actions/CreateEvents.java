@@ -13,24 +13,21 @@ import org.apache.commons.lang3.Validate;
  */
 public class CreateEvents {
     public final List events;
-    public final List stickyEvents;
 
     public CreateEvents() {
-        this(new ArrayList<>(), new ArrayList<>());
+        this(new ArrayList<>());
     }
 
-    public CreateEvents(@Nonnull List events, @Nonnull List stickyEvents) {
+    public CreateEvents(@Nonnull List events) {
         this.events = events;
-        this.stickyEvents = stickyEvents;
     }
 
     void validate() {
         Validate.noNullElements(events);
-        Validate.noNullElements(stickyEvents);
     }
 
     @Override
     public String toString() {
-        return "CreateEvents{" + "events=" + events + ", stickyEvents=" + stickyEvents + '}';
+        return "CreateEvents{" + "events=" + events + '}';
     }
 }

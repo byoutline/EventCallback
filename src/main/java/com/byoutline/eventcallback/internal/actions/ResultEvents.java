@@ -15,28 +15,24 @@ import org.apache.commons.lang3.Validate;
  */
 public class ResultEvents<R> extends CreateEvents {
     public final List<ResponseEvent<R>> resultEvents;
-    public final List<ResponseEvent<R>> resultStickyEvents;
 
     public ResultEvents() {
         this.resultEvents = new ArrayList<>();
-        this.resultStickyEvents = new ArrayList<>();
     }
 
-    public ResultEvents(@Nonnull List events, @Nonnull List stickyEvents, @Nonnull List<ResponseEvent<R>> resultEvents, @Nonnull List<ResponseEvent<R>> resultStickyEvents) {
-        super(events, stickyEvents);
+    public ResultEvents(@Nonnull List events, @Nonnull List<ResponseEvent<R>> resultEvents) {
+        super(events);
         this.resultEvents = resultEvents;
-        this.resultStickyEvents = resultStickyEvents;
     }
 
     @Override
     void validate() {
         super.validate();
         Validate.noNullElements(resultEvents);
-        Validate.noNullElements(resultStickyEvents);
     }
 
     @Override
     public String toString() {
-        return "ResultEvents{" + "resultEvents=" + resultEvents + ", resultStickyEvents=" + resultStickyEvents + '}' + super.toString();
+        return "ResultEvents{" + "resultEvents=" + resultEvents + '}' + super.toString();
     }
 }

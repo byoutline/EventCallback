@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
  * Creates complete instance of {@link EventCallback} using fluent syntax.
  *
  * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
+ * @param <S> onSuccess result type
+ * @param <E> onError result type
  */
 public class EventCallbackBuilder<S, E> {
 
@@ -90,12 +92,17 @@ public class EventCallbackBuilder<S, E> {
             this.builder = builder;
         }
 
-        public StickySetter<R, S, E> validThisSessionOnly() {
-            return new StickySetter<>(argEvents, actions.sessionOnlyEvents.events, actions.sessionOnlyEvents.stickyEvents, builder);
+        public EventCallbackBuilder<S, E> validThisSessionOnly() {
+            return addEvents(actions.sessionOnlyEvents.events);
         }
 
-        public StickySetter<R, S, E> validBetweenSessions() {
-            return new StickySetter<>(argEvents, actions.multiSessionEvents.events, actions.multiSessionEvents.stickyEvents, builder);
+        public EventCallbackBuilder<S, E> validBetweenSessions() {
+            return addEvents(actions.multiSessionEvents.events);
+        }
+
+        private EventCallbackBuilder<S, E> addEvents(List<R> events) {
+            events.addAll(argEvents);
+            return builder;
         }
     }
 
@@ -111,51 +118,15 @@ public class EventCallbackBuilder<S, E> {
             this.builder = builder;
         }
 
-        public StickySetter<ResponseEvent<R>, S, E> validThisSessionOnly() {
-            return new StickySetter<>(argEvents, actions.sessionOnlyEvents.resultEvents, actions.sessionOnlyEvents.resultStickyEvents, builder);
+        public EventCallbackBuilder<S, E> validThisSessionOnly() {
+            return addEvents(actions.sessionOnlyEvents.resultEvents);
         }
 
-        public StickySetter<ResponseEvent<R>, S, E> validBetweenSessions() {
-            return new StickySetter<>(argEvents, actions.multiSessionEvents.resultEvents, actions.multiSessionEvents.resultStickyEvents, builder);
-        }
-    }
-
-    public static class StickySetter<R, S, E> {
-
-        private final List<R> argEvents;
-        private final List<R> events;
-        private final List<R> stickyEvents;
-        private final EventCallbackBuilder<S, E> builder;
-
-        private StickySetter(List<R> argEvents, List<R> events, List<R> stickyEvents, EventCallbackBuilder<S, E> builder) {
-            this.argEvents = argEvents;
-            this.events = events;
-            this.stickyEvents = stickyEvents;
-            this.builder = builder;
+        public EventCallbackBuilder<S, E> validBetweenSessions() {
+            return addEvents(actions.multiSessionEvents.resultEvents);
         }
 
-        /**
-         * Events will be posted by {@link IBus#postSticky(java.lang.Object)}.
-         *
-         * @return builder for chaining.
-         * @deprecated Although occasionally useful sticky events were sometimes
-         * abused(fe: leaking views in android). Therefore since 1.1.0 it is
-         * advised to always use {@link #notSticky()} instead. In future
-         * versions methods asSticky and notSticky may be removed.
-         */
-        @Deprecated
-        public EventCallbackBuilder<S, E> asSticky() {
-            stickyEvents.addAll(argEvents);
-            return builder;
-        }
-
-        /**
-         * Events will be posted by {@link IBus#post(java.lang.Object)}. In
-         * future versions this method may be removed(and used by default).
-         *
-         * @return builder for chaining
-         */
-        public EventCallbackBuilder<S, E> notSticky() {
+        private EventCallbackBuilder<S, E> addEvents(List<ResponseEvent<R>> events) {
             events.addAll(argEvents);
             return builder;
         }

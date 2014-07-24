@@ -18,15 +18,15 @@ new Callback<SuccessDTO>() {
     @Override
     public void failure(RetrofitError error) {
         RestErrorWithMsg restErrorWithMsg = myCodeThatTriesToConvertRetrofitErrorToReasonCallFailed(error);
-        bus.postSticky(new LoginValidationFailedEvent(restErrorWithMsg));
+        bus.post(new LoginValidationFailedEvent(restErrorWithMsg));
     }
 };
 ```
 you can use EventCallback like this:
 ```java
 EventCallback.<SuccessDTO>builder(config, new TypeToken<RestErrorWithMsg>(){})
-    .onSuccess().postEvents(new MyEvent(), new SuccessEvent()).validThisSessionOnly().notSticky()
-    .onError().postResponseEvents(new LoginValidationFailedEvent()).validBetweenSessions().asSticky()
+    .onSuccess().postEvents(new MyEvent(), new SuccessEvent()).validThisSessionOnly()
+    .onError().postResponseEvents(new LoginValidationFailedEvent()).validBetweenSessions()
     .build();
 ``` 
 
