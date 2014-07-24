@@ -37,6 +37,7 @@ class EventCallbackSpec extends spock.lang.Specification {
         where:
         pC | cbb
         1  | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly()
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions()
         1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validBetweenSessions()
         0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onCreate().postEvents(event).validThisSessionOnly()
     }
@@ -53,6 +54,7 @@ class EventCallbackSpec extends spock.lang.Specification {
         where:
         pC | cb
         1  | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().build()
         1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validBetweenSessions().build()
         0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onSuccess().postEvents(event).validThisSessionOnly().build()
     }
@@ -75,6 +77,7 @@ class EventCallbackSpec extends spock.lang.Specification {
         where:
         pC | cb
         1  | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().build()
         1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().build()
         0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().build()
     }
