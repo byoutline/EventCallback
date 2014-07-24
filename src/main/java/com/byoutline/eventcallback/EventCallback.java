@@ -155,6 +155,10 @@ public class EventCallback<S, E> implements Callback<S> {
      * @param result response from the server that should be passed to listeners
      */
     private void informSharedSuccessHandlers(S result) {
+        if(result == null) {
+            // no handler matches undefined result class
+            return;
+        }
         for (Map.Entry<Class, SuccessHandler> handler : config.sharedSuccessHandlers.entrySet()) {
             if (handler.getKey().isAssignableFrom(result.getClass())) {
                 handler.getValue().onCallSuccess(result);
