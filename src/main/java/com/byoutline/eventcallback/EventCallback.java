@@ -61,7 +61,6 @@ public class EventCallback<S, E> implements Callback<S> {
     EventCallback(@Nonnull CallbackConfig config, @Nullable TypeToken<E> validationErrorTypeToken,
             @Nullable String currentSessionId,
             @Nonnull ScheduledActions<CreateEvents> onCreateActions, @Nonnull ScheduledActions<ResultEvents<S>> onSuccessActions, @Nonnull ScheduledActions<ResultEvents<E>> onErrorActions) {
-        Validate.notNull(config);
         this.config = config;
 
         this.validationErrorTypeToken = validationErrorTypeToken;
