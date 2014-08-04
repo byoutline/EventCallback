@@ -9,6 +9,8 @@ import javax.inject.Provider
 import com.google.gson.reflect.TypeToken
 import retrofit.Callback
 import retrofit.RetrofitError
+import retrofit.client.Response
+import retrofit.mime.TypedInput
 import spock.lang.Shared
 import spock.lang.Unroll
 
@@ -81,6 +83,61 @@ class EventCallbackSpec extends spock.lang.Specification {
         1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validBetweenSessions().build()
         0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onError().postEvents(event).validThisSessionOnly().build()
     }
+    
+    @Unroll
+    def "onStatusCodes shold post #pc times on 200 success for callback: #cb"() {
+        given:
+        Response response = new Response("url", 200, "reason", [], null)
+        
+        when:
+        cb.config.bus.impl = bus
+        cb.success("s", response)
+        
+        then:
+        pC  * bus.post(_) >> { assert it[0] == event }
+        
+        where:
+        pC | cb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(200).postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(200).postEvents(event).validBetweenSessions().build()
+        1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(200).postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(200).postEvents(event).validThisSessionOnly().build()
+        2  | MockFactory.getSameSessionBuilder(new BusProvider())
+        .onStatusCodes(200).postEvents(event).validThisSessionOnly()
+        .onStatusCodes(200).postEvents(event).validThisSessionOnly().build()
+    }
+    
+    @Unroll
+    def "onStatusCodes shold post #pc times on 400 failure for callback: #cb"() {
+        given:
+        RetrofitError retrofitError = GroovyMock(RetrofitError)
+        Response response = new Response("url", 400, "reason", [], null)
+        retrofitError.getResponse() >> response
+        
+        when:
+        cb.config.bus.impl = bus
+        cb.failure(retrofitError)
+        
+        then:
+        pC  * bus.post(_) >> { assert it[0] == event }
+        
+        where:
+        pC | cb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(400).postEvents(event).validThisSessionOnly().build()
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(400).postEvents(event).validBetweenSessions().build()
+        1  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(400).postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(400).postEvents(event).validThisSessionOnly().build()
+        
+        2  | MockFactory.getSameSessionBuilder(new BusProvider())
+        .onStatusCodes(400).postEvents(event).validThisSessionOnly()
+        .onStatusCodes(400).postEvents(event).validThisSessionOnly().build()
+        
+        0  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(401).postEvents(event).validThisSessionOnly().build()
+        0  | MockFactory.getSameSessionBuilder(new BusProvider()).onStatusCodes(401).postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(401).postEvents(event).validBetweenSessions().build()
+        0  | MockFactory.getMultiSessionBuilder(new BusProvider()).onStatusCodes(401).postEvents(event).validThisSessionOnly().build()
+    }
+    
     
     @Unroll
     def "shared success handlers should be called #callCount when server returns #response"() {
