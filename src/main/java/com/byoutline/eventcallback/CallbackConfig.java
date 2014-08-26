@@ -56,7 +56,7 @@ public class CallbackConfig {
      * @param debug true if extra checks should be on.
      * @param bus bus on which callback events will be posted.
      * @param sessionIdProvider provides information about current session.
-     * If same string is returned from two cals it is considered to be same session.
+     * If same string is returned from two calls it is considered to be same session.
      */
     public CallbackConfig(boolean debug, @Nonnull IBus bus,
             @Nonnull Provider<String> sessionIdProvider) {
