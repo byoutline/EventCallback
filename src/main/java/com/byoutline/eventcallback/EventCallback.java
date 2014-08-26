@@ -4,6 +4,7 @@ import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.EventPoster;
 import com.byoutline.eventcallback.internal.RetrofitErrorConverter;
+import com.byoutline.eventcallback.internal.SessionChecker;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.google.gson.reflect.TypeToken;
 import java.util.Map;
@@ -38,7 +39,7 @@ import retrofit.client.Response;
  * Create instance by calling
  * {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken)}.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  * @param <S> Type of response returned by server on success.
  * @param <E> Type of response returned by server on error.
  */
@@ -46,7 +47,7 @@ public class EventCallback<S, E> implements Callback<S> {
 
     private final CallbackConfig config;
     private final TypeToken<E> validationErrorTypeToken;
-    private final String callbackStartSessionId;
+    private final SessionChecker sessionChecker;
 
     private final ScheduledActions<CreateEvents> onCreateActions;
     private final ScheduledActions<ResultEvents<S>> onSuccessActions;
@@ -67,7 +68,7 @@ public class EventCallback<S, E> implements Callback<S> {
         this.config = config;
 
         this.validationErrorTypeToken = validationErrorTypeToken;
-        this.callbackStartSessionId = currentSessionId;
+        this.sessionChecker = new SessionChecker(config.sessionIdProvider, currentSessionId);
         this.onCreateActions = onCreateActions;
         this.onSuccessActions = onSuccessActions;
         this.onErrorActions = onErrorActions;
@@ -78,7 +79,7 @@ public class EventCallback<S, E> implements Callback<S> {
         }
 
         postHelper = new EventPoster(config.bus);
-        postHelper.executeCommonActions(onCreateActions, isSameSession());
+        postHelper.executeCommonActions(onCreateActions, sessionChecker.isSameSession());
     }
 
     private void validateArgs() {
@@ -134,7 +135,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = true;
         informSharedSuccessHandlers(result);
         informStatusCodeListener(response);
-        postHelper.executeResponseActions(onSuccessActions, result, isSameSession(), postNullResponse);
+        postHelper.executeResponseActions(onSuccessActions, result, sessionChecker.isSameSession(), postNullResponse);
     }
 
     @Override
@@ -142,21 +143,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = false;
         E convertedError = RetrofitErrorConverter.<E>getAsClassOrNull(validationErrorTypeToken, error);
         informStatusCodeListener(error.getResponse());
-        postHelper.executeResponseActions(onErrorActions, convertedError, isSameSession(), postNullResponse);
-    }
-
-    /**
-     * Checks if currently we are during same session that we were during
-     * callback creation.
-     *
-     * @return True if we are still during same session, false otherwise.
-     */
-    private boolean isSameSession() {
-        String sessionId = config.sessionIdProvider.get();
-        if (callbackStartSessionId == null) {
-            return sessionId == null;
-        }
-        return callbackStartSessionId.equals(sessionId);
+        postHelper.executeResponseActions(onErrorActions, convertedError, sessionChecker.isSameSession(), postNullResponse);
     }
 
     /**
@@ -189,7 +176,7 @@ public class EventCallback<S, E> implements Callback<S> {
         }
         ScheduledActions<CreateEvents> actions = onStatusCodeActions.get(response.getStatus());
         if (actions != null) {
-            postHelper.executeCommonActions(actions, isSameSession());
+            postHelper.executeCommonActions(actions, sessionChecker.isSameSession());
         }
     }
 
@@ -197,7 +184,7 @@ public class EventCallback<S, E> implements Callback<S> {
     public String toString() {
         return "EventCallback{" + "config=" + config + ",\n"
                 + "validationErrorTypeToken=" + validationErrorTypeToken + ",\n"
-                + "callbackStartSessionId=" + callbackStartSessionId + ",\n"
+                + "callbackStartSessionId=" + sessionChecker.callbackStartSessionId + ",\n"
                 + "onCreateActions=" + onCreateActions + ",\n"
                 + "onSuccessActions=" + onSuccessActions + ",\n"
                 + "onErrorActions=" + onErrorActions + '}';
