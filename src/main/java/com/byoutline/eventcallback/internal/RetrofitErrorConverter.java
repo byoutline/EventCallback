@@ -9,7 +9,7 @@ import retrofit.RetrofitError;
  * Helper class with static methods that try to convert response from
  * {@link RetrofitError} to requested type.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com> on 26.06.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 26.06.14.
  */
 public final class RetrofitErrorConverter {
     private final static Logger LOGGER = Logger.getLogger(RetrofitErrorConverter.class.getName());

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.Validate;
  * Storage of actions that will be invoked in one of {@link EventCallback} steps.
  * 
  * @param <T> Type of events that can be scheduled.
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class ScheduledActions<T extends CreateEvents> {
 

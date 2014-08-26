@@ -9,7 +9,7 @@ import javax.inject.Provider;
  * Callback that stores project wide settings. It is suggested to Inject it into
  * classes that need ability to create callbacks.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com> on 26.06.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 26.06.14.
  */
 public class CallbackConfig {
 

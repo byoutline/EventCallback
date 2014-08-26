@@ -11,7 +11,7 @@ import org.apache.commons.lang3.Validate;
  * Stores events that can be invoked during {@link EventCallback} onSuccess
  * and onError steps.
  * 
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class ResultEvents<R> extends CreateEvents {
     public final List<ResponseEvent<R>> resultEvents;

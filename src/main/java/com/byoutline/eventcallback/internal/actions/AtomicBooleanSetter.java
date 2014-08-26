@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 /**
  * Sets passed {@link AtomicBoolean} to requested value.
  * 
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class AtomicBooleanSetter {
     public final AtomicBoolean bool;

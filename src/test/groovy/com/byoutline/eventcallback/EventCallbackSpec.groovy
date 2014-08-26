@@ -16,7 +16,7 @@ import spock.lang.Unroll
 
 /**
  *
- * @author Sebastian Kacprzak <nait at naitbit.com> on 27.06.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 27.06.14.
  */
 class EventCallbackSpec extends spock.lang.Specification {
     @Shared

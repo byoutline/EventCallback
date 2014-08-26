@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 /**
  * Creates complete instance of {@link EventCallback} using fluent syntax.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com> on 17.06.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  * @param <S> onSuccess result type
  * @param <E> onError result type
  */

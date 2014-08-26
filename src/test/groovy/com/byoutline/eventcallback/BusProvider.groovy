@@ -3,7 +3,7 @@ package com.byoutline.eventcallback
 
 /**
  *
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 class BusProvider implements IBus {
     IBus impl;

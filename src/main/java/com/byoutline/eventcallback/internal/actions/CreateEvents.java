@@ -9,7 +9,7 @@ import org.apache.commons.lang3.Validate;
 /**
  * Stores events that can be invoked on {@link EventCallback} creation.
  * 
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class CreateEvents {
     public final List events;

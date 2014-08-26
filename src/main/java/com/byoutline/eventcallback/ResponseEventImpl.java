@@ -3,7 +3,7 @@ package com.byoutline.eventcallback;
 /**
  * Default implementation of {@link ResponseEvent}.
  *
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class ResponseEventImpl<R> implements ResponseEvent<R> {
     private R response;
