@@ -76,7 +76,7 @@ public class EventCallbackBuilder<S, E> {
         }
 
         public ExpireSetter<Object, S, E> postEvents(Object... events) {
-            return new ExpireSetter(Arrays.asList(events), builder, actions);
+            return new ExpireSetter<>(Arrays.asList(events), builder, actions);
         }
 
         public BoolSetter<S, E> setAtomicBooleans(AtomicBoolean... booleans) {
@@ -84,7 +84,7 @@ public class EventCallbackBuilder<S, E> {
         }
     }
 
-    public static class ResultEventsSetter<R, S, E> extends ActionsSetter {
+    public static class ResultEventsSetter<R, S, E> extends ActionsSetter<S, E> {
 
         private final ScheduledActions<ResultEvents<R>> actions;
 
