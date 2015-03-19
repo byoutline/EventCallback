@@ -30,17 +30,19 @@ dependencies {
     // allows mocking of classes (in addition to interfaces)
     testRuntime "cglib:cglib-nodep:2.2.2"
     // allows mocking of classes without default constructor (together with CGLIB)
-    testRuntime "org.objenesis:objenesis:1.2"   // allows mocking of classes without default constructor (together with CGLIB)
+    testRuntime "org.objenesis:objenesis:1.2"
 }
 
 
 gradle.taskGraph.whenReady { taskGraph ->
-    Properties p = new Properties()
-    p.load(new FileInputStream("push.properties"))
-    if (taskGraph.allTasks.any { it instanceof Sign }) {
-        allprojects { ext."signing.keyId" = p['signing.keyId'] }
-        allprojects { ext."signing.password" = p['signing.password'] }
-        allprojects { ext."signing.secretKeyRingFile" = p['signing.secretKeyRingFile'] }
+    if (file("push.properties").exists()) {
+        Properties p = new Properties()
+        p.load(new FileInputStream("push.properties"))
+        if (taskGraph.allTasks.any { it instanceof Sign }) {
+            allprojects { ext."signing.keyId" = p['signing.keyId'] }
+            allprojects { ext."signing.password" = p['signing.password'] }
+            allprojects { ext."signing.secretKeyRingFile" = p['signing.secretKeyRingFile'] }
+        }
     }
 }
 
