@@ -5,12 +5,14 @@ import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -27,9 +29,9 @@ public class EventCallbackBuilder<S, E> {
     private final String callbackStartSessionId;
 
     private final ScheduledActions<CreateEvents> onCreateActions = getCreateSheduledActionInstance();
-    private final ScheduledActions<ResultEvents<S>> onSuccessActions = new ScheduledActions<>(new ResultEvents<S>(), new ResultEvents<S>(), new ArrayList<AtomicBooleanSetter>());
-    private final ScheduledActions<ResultEvents<E>> onErrorActions = new ScheduledActions<>(new ResultEvents<E>(), new ResultEvents<E>(), new ArrayList<AtomicBooleanSetter>());
-    private final Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions = new HashMap<>();
+    private final ScheduledActions<ResultEvents<S>> onSuccessActions = new ScheduledActions<ResultEvents<S>>(new ResultEvents<S>(), new ResultEvents<S>(), new ArrayList<AtomicBooleanSetter>());
+    private final ScheduledActions<ResultEvents<E>> onErrorActions = new ScheduledActions<ResultEvents<E>>(new ResultEvents<E>(), new ResultEvents<E>(), new ArrayList<AtomicBooleanSetter>());
+    private final Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions = new HashMap<Integer, ScheduledActions<CreateEvents>>();
 
     public EventCallbackBuilder(@Nonnull CallbackConfig config,
             @Nonnull TypeToken<E> validationErrorTypeToken) {
@@ -39,30 +41,30 @@ public class EventCallbackBuilder<S, E> {
     }
 
     private static ScheduledActions<CreateEvents> getCreateSheduledActionInstance() {
-        return new ScheduledActions<>(new CreateEvents(), new CreateEvents(), new ArrayList<AtomicBooleanSetter>());
+        return new ScheduledActions<CreateEvents>(new CreateEvents(), new CreateEvents(), new ArrayList<AtomicBooleanSetter>());
     }
 
     public ActionsSetter<S, E> onCreate() {
-        return new ActionsSetter<>(this, onCreateActions);
+        return new ActionsSetter<S, E>(this, onCreateActions);
     }
 
     public ResultEventsSetter<S, S, E> onSuccess() {
-        return new ResultEventsSetter<>(this, onSuccessActions);
+        return new ResultEventsSetter<S, S, E>(this, onSuccessActions);
     }
 
     public ResultEventsSetter<E, S, E> onError() {
-        return new ResultEventsSetter<>(this, onErrorActions);
+        return new ResultEventsSetter<E, S, E>(this, onErrorActions);
     }
 
     public ActionsSetter<S, E> onStatusCodes(Integer... statusCodes) {
-        List<ScheduledActions<? extends CreateEvents>> actions = new ArrayList<>(statusCodes.length);
+        List<ScheduledActions<? extends CreateEvents>> actions = new ArrayList<ScheduledActions<? extends CreateEvents>>(statusCodes.length);
         for (Integer statusCode : statusCodes) {
             if (!onStatusCodeActions.containsKey(statusCode)) {
                 onStatusCodeActions.put(statusCode, getCreateSheduledActionInstance());
             }
             actions.add(onStatusCodeActions.get(statusCode));
         }
-        return new ActionsSetter<>(this, actions.toArray(new ScheduledActions[statusCodes.length]));
+        return new ActionsSetter<S, E>(this, actions.toArray(new ScheduledActions[statusCodes.length]));
     }
 
     public static class ActionsSetter<S, E> {
@@ -76,11 +78,11 @@ public class EventCallbackBuilder<S, E> {
         }
 
         public ExpireSetter<Object, S, E> postEvents(Object... events) {
-            return new ExpireSetter<>(Arrays.asList(events), builder, actions);
+            return new ExpireSetter<Object, S, E>(Arrays.asList(events), builder, actions);
         }
 
         public BoolSetter<S, E> setAtomicBooleans(AtomicBoolean... booleans) {
-            return new BoolSetter<>(Arrays.asList(booleans), builder, actions);
+            return new BoolSetter<S, E>(Arrays.asList(booleans), builder, actions);
         }
     }
 
