@@ -34,21 +34,18 @@ def getSnapshotRepositoryUrl() {
             : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
+project.ext.set("props", new Properties())
+if (!file("push.properties").exists()) {
+    project.props.load(new FileInputStream("push.properties"))
+}
+
 def getRepositoryUsername() {
-    if (!file("push.properties").exists()) {
-        return ''
-    }
-    Properties p = new Properties()
-    p.load(new FileInputStream("push.properties"))
+    Properties p = project.props
     return p['USERNAME'] != null ? p['USERNAME'] : (p['NEXUS_USERNAME'] != null ? p['NEXUS_USERNAME'] : '')
 }
 
 def getRepositoryPassword() {
-    if (!file("push.properties").exists()) {
-        return ''
-    }
-    Properties p = new Properties()
-    p.load(new FileInputStream("push.properties"))
+    Properties p = project.props
     return p['PASSWORD'] != null ? p['PASSWORD'] : (p['NEXUS_PASSWORD'] != null ? p['NEXUS_PASSWORD'] : '')
 }
 
