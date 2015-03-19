@@ -1,11 +1,12 @@
 package com.byoutline.eventcallback.internal.actions;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nonnull;
 
 /**
  * Sets passed {@link AtomicBoolean} to requested value.
- * 
+ *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class AtomicBooleanSetter {

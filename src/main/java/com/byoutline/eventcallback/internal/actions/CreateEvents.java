@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Stores events that can be invoked on {@link EventCallback} creation.
- * 
+ *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class CreateEvents {

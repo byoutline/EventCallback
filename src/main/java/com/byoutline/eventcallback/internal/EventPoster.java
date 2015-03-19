@@ -1,14 +1,13 @@
 package com.byoutline.eventcallback.internal;
 
-import com.byoutline.eventcallback.internal.actions.ResultEvents;
-import com.byoutline.eventcallback.internal.actions.ScheduledActions;
-import com.byoutline.eventcallback.internal.actions.CreateEvents;
-import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.IBus;
 import com.byoutline.eventcallback.ResponseEvent;
+import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
+import com.byoutline.eventcallback.internal.actions.CreateEvents;
+import com.byoutline.eventcallback.internal.actions.ResultEvents;
+import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 
 /**
- *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 26.06.14.
  */
 public class EventPoster {
@@ -29,7 +28,7 @@ public class EventPoster {
     }
 
     public <R> void executeResponseActions(ScheduledActions<ResultEvents<R>> actions, R response,
-            boolean sameSession, boolean postNullResponse) {
+                                           boolean sameSession, boolean postNullResponse) {
         executeCommonActions(actions, sameSession);
         if (response == null && !postNullResponse) {
             return;
