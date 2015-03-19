@@ -1,8 +1,10 @@
 package com.byoutline.eventcallback.internal;
 
 import com.google.gson.reflect.TypeToken;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import retrofit.RetrofitError;
 
 /**
@@ -16,11 +18,11 @@ public final class RetrofitErrorConverter {
 
     private RetrofitErrorConverter() {
     }
-    
+
     public static <E> E getAsClassOrFail(TypeToken<E> typeToken, RetrofitError error) throws RuntimeException {
         return (E) error.getBodyAs(typeToken.getType());
     }
-    
+
     public static <E> E getAsClassOrNull(TypeToken<E> typeToken, RetrofitError error) throws RuntimeException {
         if (error.isNetworkError()) {
             return null;

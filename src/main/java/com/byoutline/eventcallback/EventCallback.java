@@ -1,17 +1,21 @@
 package com.byoutline.eventcallback;
 
-import com.byoutline.eventcallback.internal.actions.ScheduledActions;
-import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.EventPoster;
 import com.byoutline.eventcallback.internal.RetrofitErrorConverter;
 import com.byoutline.eventcallback.internal.SessionChecker;
+import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
+import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.commons.lang3.Validate;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.Validate;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -127,7 +131,7 @@ public class EventCallback<S, E> implements Callback<S> {
      */
     public static <S, E> EventCallbackBuilder<S, E> builder(@Nonnull CallbackConfig config,
             @Nonnull TypeToken<E> errorTypeToken) {
-        return new EventCallbackBuilder<>(config, errorTypeToken);
+        return new EventCallbackBuilder<S, E>(config, errorTypeToken);
     }
 
     @Override

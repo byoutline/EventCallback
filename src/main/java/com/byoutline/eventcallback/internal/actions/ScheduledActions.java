@@ -1,13 +1,16 @@
 package com.byoutline.eventcallback.internal.actions;
 
 import com.byoutline.eventcallback.EventCallback;
-import java.util.List;
-import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.Validate;
+
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * Storage of actions that will be invoked in one of {@link EventCallback} steps.
- * 
+ *
  * @param <T> Type of events that can be scheduled.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
