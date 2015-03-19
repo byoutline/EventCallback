@@ -41,10 +41,12 @@ if (file("push.properties").exists()) {
 
 gradle.taskGraph.whenReady { taskGraph ->
     Properties p = project.props
-    if (taskGraph.allTasks.any { it instanceof Sign }) {
-        allprojects { ext."signing.keyId" = p['signing.keyId'] }
-        allprojects { ext."signing.password" = p['signing.password'] }
-        allprojects { ext."signing.secretKeyRingFile" = p['signing.secretKeyRingFile'] }
+    if (p['signing.secretKeyRingFile'] != null) {
+        if (taskGraph.allTasks.any { it instanceof Sign }) {
+            allprojects { ext."signing.keyId" = p['signing.keyId'] }
+            allprojects { ext."signing.password" = p['signing.password'] }
+            allprojects { ext."signing.secretKeyRingFile" = p['signing.secretKeyRingFile'] }
+        }
     }
 }
 
