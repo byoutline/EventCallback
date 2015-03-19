@@ -33,17 +33,4 @@ dependencies {
     testRuntime "org.objenesis:objenesis:1.2"
 }
 
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (file("push.properties").exists()) {
-        Properties p = new Properties()
-        p.load(new FileInputStream("push.properties"))
-        if (taskGraph.allTasks.any { it instanceof Sign }) {
-            allprojects { ext."signing.keyId" = p['signing.keyId'] }
-            allprojects { ext."signing.password" = p['signing.password'] }
-            allprojects { ext."signing.secretKeyRingFile" = p['signing.secretKeyRingFile'] }
-        }
-    }
-}
-
 apply from: 'maven-push.gradle'
