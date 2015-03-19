@@ -35,12 +35,18 @@ def getSnapshotRepositoryUrl() {
 }
 
 def getRepositoryUsername() {
+    if (!file("push.properties").exists()) {
+        return ''
+    }
     Properties p = new Properties()
     p.load(new FileInputStream("push.properties"))
     return p['USERNAME'] != null ? p['USERNAME'] : (p['NEXUS_USERNAME'] != null ? p['NEXUS_USERNAME'] : '')
 }
 
 def getRepositoryPassword() {
+    if (!file("push.properties").exists()) {
+        return ''
+    }
     Properties p = new Properties()
     p.load(new FileInputStream("push.properties"))
     return p['PASSWORD'] != null ? p['PASSWORD'] : (p['NEXUS_PASSWORD'] != null ? p['NEXUS_PASSWORD'] : '')
