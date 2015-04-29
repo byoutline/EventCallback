@@ -139,7 +139,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = true;
         informSharedSuccessHandlers(result);
         informStatusCodeListener(response);
-        postHelper.executeResponseActions(onSuccessActions, result, sessionChecker.isSameSession(), postNullResponse);
+        postHelper.executeResponseActions(onSuccessActions, result, response, sessionChecker.isSameSession(), postNullResponse);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = false;
         E convertedError = RetrofitErrorConverter.<E>getAsClassOrNull(validationErrorTypeToken, error);
         informStatusCodeListener(error.getResponse());
-        postHelper.executeResponseActions(onErrorActions, convertedError, sessionChecker.isSameSession(), postNullResponse);
+        postHelper.executeResponseActions(onErrorActions, convertedError, error.getResponse(), sessionChecker.isSameSession(), postNullResponse);
     }
 
     /**

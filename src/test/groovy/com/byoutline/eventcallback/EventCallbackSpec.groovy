@@ -1,10 +1,13 @@
 package com.byoutline.eventcallback
 
 import com.byoutline.eventcallback.ResponseEvent
+import com.byoutline.eventcallback.internal.EventPoster
 import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter
 import com.byoutline.eventcallback.internal.actions.CreateEvents
 import com.byoutline.eventcallback.internal.actions.ResultEvents
 import com.byoutline.eventcallback.internal.actions.ScheduledActions
+import retrofit.client.Header
+
 import javax.inject.Provider
 import com.google.gson.reflect.TypeToken
 import retrofit.Callback
@@ -157,12 +160,60 @@ class EventCallbackSpec extends spock.lang.Specification {
         0           | 32
         1           | "string response"
     }
+
+    @Unroll
+    def "should EventPoster executeResponseActions as events with response, headers and status"() {
+        given:
+        def headers = [new Header("Pragma", "no-cache")]
+        def response = new Response("url", 202, "reason", headers, null)
+        def responseEvent = new StringResponseEvent("body", response.headers, response.status)
+
+        def sessionOnlyEvents = new ResultEvents([responseEvent], []);
+        def multiSessionEvents = new ResultEvents([], []);
+        ScheduledActions<ResultEvents<String>> actions = new ScheduledActions(sessionOnlyEvents, multiSessionEvents, [])
+
+        when:
+        boolean sameSession = true
+        boolean postNullResponse = true
+        new EventPoster(bus).executeResponseActions(actions, responseEvent.response, response, sameSession, postNullResponse)
+
+        then:
+        pC * bus.post(_) >> {
+            def e = ((StringResponseEvent) it[0])
+            assert e.response == responseEvent.response
+            assert e.headers == response.headers
+            assert e.status == response.status
+        }
+
+        where:
+        pC | cb
+        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents().validThisSessionOnly().build()
+    }
 }
 
 class StringResponseEvent implements ResponseEvent<String> {
-    String response;
-            
+    String response
+    List<Header> headers
+    int status
+
+    public StringResponseEvent(String response, List<Header> headers, int status) {
+        this.response = response
+        this.headers = headers
+        this.status = status
+    }
+
+    @Override
     void setResponse(String response) {
-        this.response = response;
+        this.response = response
+    }
+
+    @Override
+    void setHeaders(List<Header> headers) {
+        this.headers = headers
+    }
+
+    @Override
+    void setStatus(int status) {
+        this.status = status
     }
 }

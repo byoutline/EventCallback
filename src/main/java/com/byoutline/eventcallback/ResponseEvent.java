@@ -1,5 +1,9 @@
 package com.byoutline.eventcallback;
 
+import retrofit.client.Header;
+
+import java.util.List;
+
 /**
  * Event that will have server response set.
  *
@@ -8,4 +12,8 @@ package com.byoutline.eventcallback;
 public interface ResponseEvent<R> {
 
     void setResponse(R response);
+
+    void setHeaders(List<Header> headers);
+
+    void setStatus(int status);
 }
