@@ -18,9 +18,9 @@ import javax.annotation.Nonnull;
 /**
  * Creates complete instance of {@link EventCallback} using fluent syntax.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  * @param <S> onSuccess result type
  * @param <E> onError result type
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  */
 public class EventCallbackBuilder<S, E> {
 
@@ -34,7 +34,7 @@ public class EventCallbackBuilder<S, E> {
     private final Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions = new HashMap<Integer, ScheduledActions<CreateEvents>>();
 
     public EventCallbackBuilder(@Nonnull CallbackConfig config,
-            @Nonnull TypeToken<E> validationErrorTypeToken) {
+                                @Nonnull TypeToken<E> validationErrorTypeToken) {
         this.config = config;
         this.validationErrorTypeToken = validationErrorTypeToken;
         this.callbackStartSessionId = config.sessionIdProvider.get();
@@ -194,7 +194,7 @@ public class EventCallbackBuilder<S, E> {
     public EventCallback<S, E> build() {
         return new EventCallback(config, validationErrorTypeToken,
                 callbackStartSessionId,
-                onCreateActions, onSuccessActions, 
+                onCreateActions, onSuccessActions,
                 onErrorActions, onStatusCodeActions);
     }
 }

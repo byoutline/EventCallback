@@ -2,6 +2,7 @@ package com.byoutline.eventcallback;
 
 import java.util.Collections;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
@@ -31,13 +32,12 @@ public class CallbackConfig {
     }
 
     /**
-     *
      * Creates instance of default config for callbacks. Uses session provider
      * that always return same session, so there will be no difference between
      * sameSessionOnly and multiSessions events.
      *
      * @param debug true if extra checks should be on.
-     * @param bus bus on which callback events will be posted.
+     * @param bus   bus on which callback events will be posted.
      */
     public CallbackConfig(boolean debug, @Nonnull IBus bus) {
         this(debug, bus, new Provider<String>() {
@@ -51,32 +51,32 @@ public class CallbackConfig {
     }
 
     /**
-     * Creates instance of default config for callbacks. 
-     * 
-     * @param debug true if extra checks should be on.
-     * @param bus bus on which callback events will be posted.
+     * Creates instance of default config for callbacks.
+     *
+     * @param debug             true if extra checks should be on.
+     * @param bus               bus on which callback events will be posted.
      * @param sessionIdProvider provides information about current session.
-     * If same string is returned from two calls it is considered to be same session.
+     *                          If same string is returned from two calls it is considered to be same session.
      */
     public CallbackConfig(boolean debug, @Nonnull IBus bus,
-            @Nonnull Provider<String> sessionIdProvider) {
+                          @Nonnull Provider<String> sessionIdProvider) {
         this(debug, bus, sessionIdProvider, Collections.EMPTY_MAP);
     }
 
     /**
-     * Creates instance of default config for callbacks. 
-     * 
-     * @param debug true if extra checks should be on.
-     * @param bus bus on which callback events will be posted.
-     * @param sessionIdProvider provides information about current session.
-     * If same string is returned from two calls it is considered to be same session.
+     * Creates instance of default config for callbacks.
+     *
+     * @param debug                 true if extra checks should be on.
+     * @param bus                   bus on which callback events will be posted.
+     * @param sessionIdProvider     provides information about current session.
+     *                              If same string is returned from two calls it is considered to be same session.
      * @param sharedSuccessHandlers maps success responses from server with
-     * {@link SuccessHandler}s so common operation for given result type can
-     * be handled globally in whole project.
+     *                              {@link SuccessHandler}s so common operation for given result type can
+     *                              be handled globally in whole project.
      */
     public CallbackConfig(boolean debug, @Nonnull IBus bus,
-            @Nonnull Provider<String> sessionIdProvider,
-            @Nonnull Map<Class, SuccessHandler> sharedSuccessHandlers) {
+                          @Nonnull Provider<String> sessionIdProvider,
+                          @Nonnull Map<Class, SuccessHandler> sharedSuccessHandlers) {
         this.debug = debug;
         this.bus = bus;
         this.sessionIdProvider = sessionIdProvider;

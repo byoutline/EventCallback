@@ -17,7 +17,7 @@ public class ResponseEventImpl<R> implements ResponseEvent<R> {
     public R getResponse() {
         return response;
     }
-    
+
     @Override
     public void setResponse(R response) {
         this.response = response;
