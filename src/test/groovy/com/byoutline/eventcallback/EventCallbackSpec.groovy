@@ -1,17 +1,10 @@
 package com.byoutline.eventcallback
 
-import com.byoutline.eventcallback.ResponseEvent
 import com.byoutline.eventcallback.internal.EventPoster
-import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter
-import com.byoutline.eventcallback.internal.actions.CreateEvents
 import com.byoutline.eventcallback.internal.actions.ResultEvents
 import com.byoutline.eventcallback.internal.actions.ScheduledActions
-import retrofit.client.Header
-
-import javax.inject.Provider
-import com.google.gson.reflect.TypeToken
-import retrofit.Callback
 import retrofit.RetrofitError
+import retrofit.client.Header
 import retrofit.client.Response
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -192,8 +185,6 @@ class EventCallbackSpec extends spock.lang.Specification {
 
 class StringResponseEvent implements ResponseEvent<String> {
     String response;
-
-    String response
     List<Header> headers
     int status
 
