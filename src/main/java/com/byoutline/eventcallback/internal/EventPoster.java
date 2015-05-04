@@ -2,6 +2,7 @@ package com.byoutline.eventcallback.internal;
 
 import com.byoutline.eventcallback.IBus;
 import com.byoutline.eventcallback.ResponseEvent;
+import com.byoutline.eventcallback.RetrofitResponseEvent;
 import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
@@ -63,8 +64,11 @@ public class EventPoster {
     private <R> void postResponseEvents(R result, Response response, Iterable<ResponseEvent<R>> events) {
         for (ResponseEvent<R> event : events) {
             event.setResponse(result);
-            event.setHeaders(response.getHeaders());
-            event.setStatus(response.getStatus());
+            if(event instanceof RetrofitResponseEvent) {
+                RetrofitResponseEvent retrofitEvent = (RetrofitResponseEvent) event;
+                retrofitEvent.setHeaders(response.getHeaders());
+                retrofitEvent.setStatus(response.getStatus());
+            }
             bus.post(event);
         }
     }

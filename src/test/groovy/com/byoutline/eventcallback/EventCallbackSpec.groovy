@@ -1,11 +1,9 @@
 package com.byoutline.eventcallback
 
-import com.byoutline.eventcallback.internal.EventPoster
-import com.byoutline.eventcallback.internal.actions.ResultEvents
-import com.byoutline.eventcallback.internal.actions.ScheduledActions
 import retrofit.RetrofitError
 import retrofit.client.Header
 import retrofit.client.Response
+import retrofit.mime.TypedInput
 import spock.lang.Shared
 import spock.lang.Unroll
 
@@ -153,59 +151,26 @@ class EventCallbackSpec extends spock.lang.Specification {
         1         | "string response"
     }
 
-    @Unroll
-    def "should EventPoster executeResponseActions as events with response, headers and status"() {
+    def "onSuccess should post events with response, headers and status set when passed RetrofitResponseEvent"() {
         given:
+        TypedInput body = null
         def headers = [new Header("Pragma", "no-cache")]
-        def response = new Response("url", 202, "reason", headers, null)
-        def responseEvent = new StringResponseEvent("body", response.headers, response.status)
+        def response = new Response("url", 202, "reason", headers, body)
 
-        def sessionOnlyEvents = new ResultEvents([responseEvent], []);
-        def multiSessionEvents = new ResultEvents([], []);
-        ScheduledActions<ResultEvents<String>> actions = new ScheduledActions(sessionOnlyEvents, multiSessionEvents, [])
+        def cb = MockFactory.getSameSessionBuilder(new BusProvider())
+                .onSuccess().postResponseEvents(new RetrofitResponseEventImpl<String>()).validBetweenSessions()
+                .build()
+        cb.config.bus.impl = bus
 
         when:
-        boolean sameSession = true
-        boolean postNullResponse = true
-        new EventPoster(bus).executeResponseActions(actions, responseEvent.response, response, sameSession, postNullResponse)
+        cb.success(body, response)
 
         then:
-        pC * bus.post(_) >> {
-            def e = ((StringResponseEvent) it[0])
-            assert e.response == responseEvent.response
-            assert e.headers == response.headers
-            assert e.status == response.status
+        1 * bus.post(_) >> {
+            def result = ((RetrofitResponseEventImpl) it[0])
+            assert result.getResponse() == response.getBody()
+            assert result.getHeaders() == response.getHeaders()
+            assert result.getStatus() == response.getStatus()
         }
-
-        where:
-        pC | cb
-        1  | MockFactory.getSameSessionBuilder(new BusProvider()).onSuccess().postEvents().validThisSessionOnly().build()
-    }
-}
-
-class StringResponseEvent implements ResponseEvent<String> {
-    String response;
-    List<Header> headers
-    int status
-
-    public StringResponseEvent(String response, List<Header> headers, int status) {
-        this.response = response
-        this.headers = headers
-        this.status = status
-    }
-
-    @Override
-    void setResponse(String response) {
-        this.response = response
-    }
-
-    @Override
-    void setHeaders(List<Header> headers) {
-        this.headers = headers
-    }
-
-    @Override
-    void setStatus(int status) {
-        this.status = status
     }
 }
