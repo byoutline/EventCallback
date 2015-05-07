@@ -15,12 +15,8 @@ public class RetrofitResponseEventImpl<R> extends ResponseEventImpl<R>
     private int status;
 
     @Override
-    public void setHeaders(List<Header> headers) {
+    public void setHeadersAndStatus(List<Header> headers, int status) {
         this.headers = headers;
-    }
-
-    @Override
-    public void setStatus(int status) {
         this.status = status;
     }
 

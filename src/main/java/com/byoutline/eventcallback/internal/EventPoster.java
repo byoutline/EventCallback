@@ -66,8 +66,7 @@ public class EventPoster {
             event.setResponse(result);
             if(event instanceof RetrofitResponseEvent) {
                 RetrofitResponseEvent retrofitEvent = (RetrofitResponseEvent) event;
-                retrofitEvent.setHeaders(response.getHeaders());
-                retrofitEvent.setStatus(response.getStatus());
+                retrofitEvent.setHeadersAndStatus(response.getHeaders(), response.getStatus());
             }
             bus.post(event);
         }

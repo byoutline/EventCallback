@@ -9,7 +9,5 @@ import java.util.List;
  */
 public interface RetrofitResponseEvent<R> extends ResponseEvent<R> {
 
-    void setHeaders(List<Header> headers);
-
-    void setStatus(int status);
+    void setHeadersAndStatus(List<Header> headers, int status);
 }
