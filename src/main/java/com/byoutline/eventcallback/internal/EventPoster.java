@@ -2,10 +2,12 @@ package com.byoutline.eventcallback.internal;
 
 import com.byoutline.eventcallback.IBus;
 import com.byoutline.eventcallback.ResponseEvent;
+import com.byoutline.eventcallback.RetrofitResponseEvent;
 import com.byoutline.eventcallback.internal.actions.AtomicBooleanSetter;
 import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
+import retrofit.client.Response;
 
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 26.06.14.
@@ -27,13 +29,13 @@ public class EventPoster {
         postAll(actions.multiSessionEvents);
     }
 
-    public <R> void executeResponseActions(ScheduledActions<ResultEvents<R>> actions, R response,
+    public <R> void executeResponseActions(ScheduledActions<ResultEvents<R>> actions, R result, Response response,
                                            boolean sameSession, boolean postNullResponse) {
         executeCommonActions(actions, sameSession);
-        if (response == null && !postNullResponse) {
+        if (result == null && !postNullResponse) {
             return;
         }
-        postResponseEvents(sameSession, postNullResponse, response, actions);
+        postResponseEvents(sameSession, postNullResponse, result, response, actions);
     }
 
     private static void setBools(Iterable<AtomicBooleanSetter> boolsToSet) {
@@ -52,16 +54,20 @@ public class EventPoster {
         }
     }
 
-    private <R> void postResponseEvents(boolean sameSession, boolean postNullResponse, R response, ScheduledActions<ResultEvents<R>> actions) {
+    private <R> void postResponseEvents(boolean sameSession, boolean postNullResponse, R result, Response response, ScheduledActions<ResultEvents<R>> actions) {
         if (sameSession) {
-            postResponseEvents(response, actions.sessionOnlyEvents.resultEvents);
+            postResponseEvents(result, response, actions.sessionOnlyEvents.resultEvents);
         }
-        postResponseEvents(response, actions.multiSessionEvents.resultEvents);
+        postResponseEvents(result, response, actions.multiSessionEvents.resultEvents);
     }
 
-    private <R> void postResponseEvents(R response, Iterable<ResponseEvent<R>> events) {
+    private <R> void postResponseEvents(R result, Response response, Iterable<ResponseEvent<R>> events) {
         for (ResponseEvent<R> event : events) {
-            event.setResponse(response);
+            event.setResponse(result);
+            if(event instanceof RetrofitResponseEvent) {
+                RetrofitResponseEvent retrofitEvent = (RetrofitResponseEvent) event;
+                retrofitEvent.setHeadersAndStatus(response.getHeaders(), response.getStatus());
+            }
             bus.post(event);
         }
     }

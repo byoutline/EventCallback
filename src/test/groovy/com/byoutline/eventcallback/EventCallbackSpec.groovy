@@ -1,7 +1,9 @@
 package com.byoutline.eventcallback
 
 import retrofit.RetrofitError
+import retrofit.client.Header
 import retrofit.client.Response
+import retrofit.mime.TypedInput
 import spock.lang.Shared
 import spock.lang.Unroll
 
@@ -148,12 +150,27 @@ class EventCallbackSpec extends spock.lang.Specification {
         0         | 32
         1         | "string response"
     }
-}
 
-class StringResponseEvent implements ResponseEvent<String> {
-    String response;
+    def "onSuccess should post events with response, headers and status set when passed RetrofitResponseEvent"() {
+        given:
+        TypedInput body = null
+        def headers = [new Header("Pragma", "no-cache")]
+        def response = new Response("url", 202, "reason", headers, body)
 
-    void setResponse(String response) {
-        this.response = response;
+        def cb = MockFactory.getSameSessionBuilder(new BusProvider())
+                .onSuccess().postResponseEvents(new RetrofitResponseEventImpl<String>()).validBetweenSessions()
+                .build()
+        cb.config.bus.impl = bus
+
+        when:
+        cb.success(body, response)
+
+        then:
+        1 * bus.post(_) >> {
+            def result = ((RetrofitResponseEventImpl) it[0])
+            assert result.getResponse() == response.getBody()
+            assert result.getHeaders() == response.getHeaders()
+            assert result.getStatus() == response.getStatus()
+        }
     }
 }
