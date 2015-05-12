@@ -7,22 +7,19 @@ import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.commons.lang3.Validate;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * <h2>Callback that can be safely called from fragments and activities.</h2>
- *
+ * <p>
  * Can be configured to execute actions during following steps:
  * <ul>
  * <li> onSuccess (when call was successful) </li>
@@ -43,9 +40,9 @@ import retrofit.client.Response;
  * Create instance by calling
  * {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken)}.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  * @param <S> Type of response returned by server on success.
  * @param <E> Type of response returned by server on error.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  */
 public class EventCallback<S, E> implements Callback<S> {
 
@@ -62,13 +59,13 @@ public class EventCallback<S, E> implements Callback<S> {
 
     /**
      * Creates instance. For convenience use
-     * {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken, com.google.gson.reflect.TypeToken)}
+     * {@link #builder(CallbackConfig, TypeToken)}
      * instead of calling directly.
      */
     EventCallback(@Nonnull CallbackConfig config, @Nullable TypeToken<E> validationErrorTypeToken,
-            @Nullable String currentSessionId,
-            @Nonnull ScheduledActions<CreateEvents> onCreateActions, @Nonnull ScheduledActions<ResultEvents<S>> onSuccessActions,
-            @Nonnull ScheduledActions<ResultEvents<E>> onErrorActions, @Nonnull Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions) {
+                  @Nullable String currentSessionId,
+                  @Nonnull ScheduledActions<CreateEvents> onCreateActions, @Nonnull ScheduledActions<ResultEvents<S>> onSuccessActions,
+                  @Nonnull ScheduledActions<ResultEvents<E>> onErrorActions, @Nonnull Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions) {
         this.config = config;
 
         this.validationErrorTypeToken = validationErrorTypeToken;
@@ -102,35 +99,34 @@ public class EventCallback<S, E> implements Callback<S> {
 
     /**
      * Returns builder that creates {@link EventCallback}.
-     *
+     * <p>
      * To avoid passing all arguments on each callback creation it is suggested
      * to wrap this call in project. For example:
-     *
+     * <p>
      * <pre><code class="java">
      * class MyEventCallback&lt;S&gt; {
-     *
+     * <p>
      *     CallbackConfig config = injected;
      *     private EventCallbackBuilder&lt;S, MyHandledErrorMsg&gt; builder() {
      *         return EventCallback.builder(config, new TypeToken&lt;MyHandledErrorMsg&gt;(){});
      *     }
-     *
+     * <p>
      *     public static &lt;S&gt; EventCallbackBuilder&lt;S, MyHandledErrorMsg&gt; ofType() {
      *         return new MyEventCallback&lt;S&gt;().builder(responseType);
      *     }
      * }
      * </code></pre>
      *
-     * @param <S> Type of response returned by server onSuccess
-     * @param <E> Type of response returned by server onError
-     *
-     * @param config Shared configuration
+     * @param <S>            Type of response returned by server onSuccess
+     * @param <E>            Type of response returned by server onError
+     * @param config         Shared configuration
      * @param errorTypeToken TypeToken that provides information about expected
-     * response returned by server
+     *                       response returned by server
      * @return Builder that assists in creating valid EventCallback in readable
      * way.
      */
     public static <S, E> EventCallbackBuilder<S, E> builder(@Nonnull CallbackConfig config,
-            @Nonnull TypeToken<E> errorTypeToken) {
+                                                            @Nonnull TypeToken<E> errorTypeToken) {
         return new EventCallbackBuilder<S, E>(config, errorTypeToken);
     }
 
@@ -139,7 +135,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = true;
         informSharedSuccessHandlers(result);
         informStatusCodeListener(response);
-        postHelper.executeResponseActions(onSuccessActions, result, sessionChecker.isSameSession(), postNullResponse);
+        postHelper.executeResponseActions(onSuccessActions, result, response, sessionChecker.isSameSession(), postNullResponse);
     }
 
     @Override
@@ -147,7 +143,7 @@ public class EventCallback<S, E> implements Callback<S> {
         boolean postNullResponse = false;
         E convertedError = RetrofitErrorConverter.<E>getAsClassOrNull(validationErrorTypeToken, error);
         informStatusCodeListener(error.getResponse());
-        postHelper.executeResponseActions(onErrorActions, convertedError, sessionChecker.isSameSession(), postNullResponse);
+        postHelper.executeResponseActions(onErrorActions, convertedError, error.getResponse(), sessionChecker.isSameSession(), postNullResponse);
     }
 
     /**
@@ -172,7 +168,7 @@ public class EventCallback<S, E> implements Callback<S> {
      * execute it.
      *
      * @param response response from the server that can be checked for status
-     * code.
+     *                 code.
      */
     private void informStatusCodeListener(@Nullable Response response) {
         if (response == null) {

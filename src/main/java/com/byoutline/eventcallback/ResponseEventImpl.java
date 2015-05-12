@@ -8,10 +8,13 @@ package com.byoutline.eventcallback;
 public class ResponseEventImpl<R> implements ResponseEvent<R> {
     private R response;
 
+    /**
+     * @return body of response returned from server
+     */
     public R getResponse() {
         return response;
     }
-    
+
     @Override
     public void setResponse(R response) {
         this.response = response;

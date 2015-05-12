@@ -6,21 +6,16 @@ import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Creates complete instance of {@link EventCallback} using fluent syntax.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  * @param <S> onSuccess result type
  * @param <E> onError result type
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 17.06.14.
  */
 public class EventCallbackBuilder<S, E> {
 
@@ -34,7 +29,7 @@ public class EventCallbackBuilder<S, E> {
     private final Map<Integer, ScheduledActions<CreateEvents>> onStatusCodeActions = new HashMap<Integer, ScheduledActions<CreateEvents>>();
 
     public EventCallbackBuilder(@Nonnull CallbackConfig config,
-            @Nonnull TypeToken<E> validationErrorTypeToken) {
+                                @Nonnull TypeToken<E> validationErrorTypeToken) {
         this.config = config;
         this.validationErrorTypeToken = validationErrorTypeToken;
         this.callbackStartSessionId = config.sessionIdProvider.get();
@@ -95,6 +90,11 @@ public class EventCallbackBuilder<S, E> {
             this.actions = actions;
         }
 
+        /**
+         * @param events events to be posted with response body set. If you want to receive also
+         *               status code and headers pass instances of {@link RetrofitResponseEvent}.
+         * @return next stage of the builder
+         */
         public ResultExpireSetter<R, S, E> postResponseEvents(ResponseEvent<R>... events) {
             return new ResultExpireSetter(Arrays.asList(events), builder, actions);
         }
@@ -194,7 +194,7 @@ public class EventCallbackBuilder<S, E> {
     public EventCallback<S, E> build() {
         return new EventCallback(config, validationErrorTypeToken,
                 callbackStartSessionId,
-                onCreateActions, onSuccessActions, 
+                onCreateActions, onSuccessActions,
                 onErrorActions, onStatusCodeActions);
     }
 }

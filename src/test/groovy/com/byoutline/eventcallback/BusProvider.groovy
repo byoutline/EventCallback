@@ -1,4 +1,3 @@
-
 package com.byoutline.eventcallback
 
 /**
@@ -7,6 +6,7 @@ package com.byoutline.eventcallback
  */
 class BusProvider implements IBus {
     IBus impl;
+
     void post(Object o) {
         impl.post(o)
     }
