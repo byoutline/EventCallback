@@ -7,18 +7,15 @@ import com.byoutline.eventcallback.internal.actions.CreateEvents;
 import com.byoutline.eventcallback.internal.actions.ResultEvents;
 import com.byoutline.eventcallback.internal.actions.ScheduledActions;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.commons.lang3.Validate;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <h2>Callback that can be safely called from fragments and activities.</h2>
@@ -62,7 +59,7 @@ public class EventCallback<S, E> implements Callback<S> {
 
     /**
      * Creates instance. For convenience use
-     * {@link #builder(com.byoutline.eventcallback.CallbackConfig, com.google.gson.reflect.TypeToken, com.google.gson.reflect.TypeToken)}
+     * {@link #builder(CallbackConfig, TypeToken)}
      * instead of calling directly.
      */
     EventCallback(@Nonnull CallbackConfig config, @Nullable TypeToken<E> validationErrorTypeToken,
