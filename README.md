@@ -71,3 +71,6 @@ MyEventCallback.<UserResponse>builder()
                .build();
 ```
 
+Latest Changes
+--------------
+1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
