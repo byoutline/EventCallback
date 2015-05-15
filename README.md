@@ -73,4 +73,4 @@ MyEventCallback.<UserResponse>builder()
 
 Latest Changes
 --------------
-1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
+* 1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
