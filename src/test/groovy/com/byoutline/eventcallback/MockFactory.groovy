@@ -1,12 +1,13 @@
 package com.byoutline.eventcallback
 
+import com.byoutline.eventcallback.util.StubSessionIdProvider
 import com.google.gson.reflect.TypeToken
 import retrofit.Callback
 
 import javax.inject.Provider
 
 static Provider<String> getSameSessionIdProvider() {
-    return { return "sessionId" } as Provider<String>
+    return new StubSessionIdProvider()
 }
 
 static CallbackConfig getSameSessionConfig(IBus bus) {
