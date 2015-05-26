@@ -1,7 +1,7 @@
 EventCallback
 =============
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.eventcallback/eventcallback/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.eventcallback/eventcallback)
-[![Build Status](https://travis-ci.org/byoutline/EventCallback.svg?branch=master)](https://travis-ci.org/byoutline/EventCallback)
+[![Build Status](https://travis-ci.org/byoutline/EventCallback.svg?branch=master)](https://travis-ci.org/byoutline/EventCallback) [![Coverage Status](https://coveralls.io/repos/byoutline/EventCallback/badge.svg?branch=master)](https://coveralls.io/r/byoutline/EventCallback?branch=master)
 
 EventCallback allows creating instances of [Retrofit](http://square.github.io/retrofit/) [callbacks](http://square.github.io/retrofit/javadoc/retrofit/Callback.html) using short, fluent syntax.
 
@@ -71,3 +71,7 @@ MyEventCallback.<UserResponse>builder()
                .build();
 ```
 
+Latest Changes
+--------------
+* 1.3.1 StubSessionIdProvider - empty implementation of session id provider, for projects that do not have session.
+* 1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
