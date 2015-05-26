@@ -73,4 +73,5 @@ MyEventCallback.<UserResponse>builder()
 
 Latest Changes
 --------------
+* 1.3.1 StubSessionIdProvider - empty implementation of session id provider, for projects that do not have session.
 * 1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
