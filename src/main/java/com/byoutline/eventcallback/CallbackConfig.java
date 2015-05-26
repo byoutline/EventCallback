@@ -1,10 +1,11 @@
 package com.byoutline.eventcallback;
 
-import java.util.Collections;
-import java.util.Map;
+import com.byoutline.eventcallback.util.StubSessionIdProvider;
 
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Callback that stores project wide settings. It is suggested to Inject it into
@@ -40,14 +41,7 @@ public class CallbackConfig {
      * @param bus   bus on which callback events will be posted.
      */
     public CallbackConfig(boolean debug, @Nonnull IBus bus) {
-        this(debug, bus, new Provider<String>() {
-
-            @Override
-            public String get() {
-                return "";
-            }
-
-        });
+        this(debug, bus, new StubSessionIdProvider());
     }
 
     /**
