@@ -38,7 +38,7 @@ How to use
 ##### Including dependency #####
 Add to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.eventcallback:eventcallback:1.3.0'
+compile 'com.byoutline.eventcallback:eventcallback:1.3.1'
 ```
 
 ##### Init common settings #####
