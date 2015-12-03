@@ -1,11 +1,10 @@
 package com.byoutline.eventcallback.internal;
 
 import com.google.gson.reflect.TypeToken;
+import retrofit.RetrofitError;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import retrofit.RetrofitError;
 
 /**
  * Helper class with static methods that try to convert response from

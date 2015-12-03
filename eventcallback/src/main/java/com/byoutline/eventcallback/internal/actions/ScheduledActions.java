@@ -1,12 +1,10 @@
 package com.byoutline.eventcallback.internal.actions;
 
 import com.byoutline.eventcallback.EventCallback;
-
 import org.apache.commons.lang3.Validate;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Storage of actions that will be invoked in one of {@link EventCallback} steps.

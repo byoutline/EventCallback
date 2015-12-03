@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+apply from: '../gradle/byoutline/javaLib.gradle'
+
+repositories {
+    mavenCentral()
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    compile 'javax.inject:javax.inject:1'
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
+    compile 'com.squareup.retrofit:retrofit:1.5.0'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'com.byoutline.eventcallback:eventcallback-api:1.0.1'
+}
+
+apply from: '../gradle/maven-push.gradle'

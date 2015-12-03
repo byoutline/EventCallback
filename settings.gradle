@@ -1,1 +1,4 @@
+include ':eventcallback-api'
+include ':eventcallback'
+
 rootProject.name = 'EventCallback'
