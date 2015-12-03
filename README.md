@@ -73,5 +73,7 @@ MyEventCallback.<UserResponse>builder()
 
 Latest Changes
 --------------
+* 1.3.2 Split up interfaces to eventcallback-api, so projects or other libs that want to use them do not have to depend
+  on full EventCallback and its depenedencies (Retrofit)
 * 1.3.1 StubSessionIdProvider - empty implementation of session id provider, for projects that do not have session.
 * 1.3.0 Status code and response headers will be set for events that implement RetrofitResponseEvent interface.
