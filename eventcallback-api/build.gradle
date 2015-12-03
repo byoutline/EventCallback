@@ -1,0 +1,13 @@
+apply plugin: 'java'
+
+apply from: '../gradle/byoutline/javaLib.gradle'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'javax.inject:javax.inject:1'
+}
+
+apply from: '../gradle/maven-push.gradle'

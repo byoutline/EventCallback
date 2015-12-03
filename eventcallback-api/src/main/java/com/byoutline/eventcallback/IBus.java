@@ -1,7 +1,7 @@
 package com.byoutline.eventcallback;
 
 /**
- * Bus on which all events from {@link EventCallback} will be posted.
+ * Bus interface.
  *
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */

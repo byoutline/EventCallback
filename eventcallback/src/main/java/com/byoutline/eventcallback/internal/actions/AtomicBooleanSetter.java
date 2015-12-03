@@ -1,8 +1,7 @@
 package com.byoutline.eventcallback.internal.actions;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.annotation.Nonnull;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Sets passed {@link AtomicBoolean} to requested value.
