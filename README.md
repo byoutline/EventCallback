@@ -1,9 +1,9 @@
 EventCallback
 =============
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.eventcallback/eventcallback/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.eventcallback/eventcallback)
-[![Build Status](https://travis-ci.org/byoutline/EventCallback.svg?branch=master)](https://travis-ci.org/byoutline/EventCallback) [![Coverage Status](https://coveralls.io/repos/byoutline/EventCallback/badge.svg?branch=master)](https://coveralls.io/r/byoutline/EventCallback?branch=master)
+[![Build Status](https://travis-ci.org/byoutline/EventCallback.svg?branch=master)](https://travis-ci.org/byoutline/EventCallback) [![Coverage Status](https://coveralls.io/repos/byoutline/EventCallback/badge.svg?branch=master)](https://coveralls.io/r/byoutline/EventCallback?branch=master) 
 
-EventCallback allows creating instances of [Retrofit](http://square.github.io/retrofit/) [callbacks](http://square.github.io/retrofit/javadoc/retrofit/Callback.html) using short, fluent syntax.
+`EventCallback` allows creating instances of [Retrofit](http://square.github.io/retrofit/) [callbacks](http://square.github.io/retrofit/javadoc/retrofit/Callback.html) using short, fluent syntax. Wrapper for use with [Otto bus](https://github.com/square/otto) is also provided.
 
 Instead of creating classes manually (where you have to take care not to leak anything)
 ```java
@@ -25,12 +25,12 @@ new Callback<SuccessDTO>() {
     }
 };
 ```
-you can use EventCallback like this:
+you can use `EventCallback` like this:
 ```java
-EventCallback.<SuccessDTO>builder(config, new TypeToken<RestErrorWithMsg>(){})
-    .onSuccess().postEvents(new MyEvent(), new SuccessEvent()).validThisSessionOnly()
-    .onError().postResponseEvents(new LoginValidationFailedEvent()).validBetweenSessions()
-    .build();
+MyEventCallback.<SuccessDTO>builder()
+               .onSuccess().postResponseEvents(new MyEvent(), new SuccessEvent()).validThisSessionOnly()
+               .onError().postEvents(new LoginValidationFailedEvent()).validBetweenSessions()
+               .build();
 ``` 
 
 How to use
@@ -38,57 +38,9 @@ How to use
 ##### Including dependency #####
 Add to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.eventcallback:eventcallback:1.3.2'
+compile 'com.byoutline.ottoeventcallback:ottoeventcallback:1.3.2' // If you want to use it with Otto
+compile 'com.byoutline.eventcallback:eventcallback:1.3.2' // If you want to use it without otto, or force different eventcallback version
 ```
-
-##### Init common settings #####
-In many cases you may want to use same config and error message for single endpoint. 
-
-```java
-import com.byoutline.eventcallback.CallbackConfig;
-import com.byoutline.eventcallback.EventCallbackBuilder;
-import com.google.gson.reflect.TypeToken;
-
-public class MyEventCallback<S> extends EventCallbackBuilder<S, RestErrorWithMsg> {
-
-    public static CallbackConfig config;
-
-    private MyEventCallback() {
-        super(MyEventCallback.config, new TypeToken<RestErrorWithMsg>() {});
-    }
-
-    public static <S> MyEventCallback<S> builder() {
-        return new MyEventCallback<>();
-    }
-}
-```
-
-##### Create callback where you need them #####
-```java
-MyEventCallback.<UserResponse>builder()
-               .onSuccess().postResponseEvents(new MyEvent()).validBetweenSessions()
-               .onError().postEvents(new LoginValidationFailedEvent()).validBetweenSessions()
-               .build();
-```
-
-OttoEventCallback
-=================
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.ottoeventcallback/ottoeventcallback/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.ottoeventcallback/ottoeventcallback)
-[![Build Status](https://travis-ci.org/byoutline/OttoEventCallback.svg?branch=master)](https://travis-ci.org/byoutline/OttoEventCallback)
-
-Utility classes that make using [EventCallback](https://github.com/byoutline/EventCallback/) with [Otto](https://github.com/square/otto) easier.
-
-How to use
-----------
-##### Including dependency #####
-Add to your ```build.gradle```:
-```groovy
-dependencies {
- compile 'com.byoutline.ottoeventcallback:ottoeventcallback:1.3.2'
- compile 'com.byoutline.eventcallback:eventcallback:1.3.2' # Optional: add if you want to force specific version of EventCallback
-}
-```
-
 
 ##### Init common settings #####
 In many cases you may want to use same config and error message for single endpoint. To specify your generic error class you must extend ```EventCallbackBuilder```:
@@ -112,12 +64,13 @@ public class MyEventCallback<S> extends EventCallbackBuilder<S, RestErrorWithMsg
 }
 ```
 
+
 and init its default ```CallbackConfig``` in your ```Application``` ```onCreate``` method:
 ```java
 MyEventCallback.config = new CallbackConfig(BuildConfig.DEBUG, bus, sessionIdProvider);
 ```
 
-Usually dependency injection is used to create bus instance and sessionIdProvider and inject them into Application:
+Usually dependency injection is used to create bus instance and `sessionIdProvider` and inject them into `Application`:
 ```java
 public class App extends Application {
     public static final String App.INJECT_NAME_SESSION_ID = "INJECT_NAME_SESSION_ID";
@@ -157,6 +110,7 @@ MyEventCallback.<UserResponse>builder()
                .build();
 ```
 
+
 Available bus wrappers
 ----------------------
 
@@ -178,4 +132,6 @@ compile 'com.byoutline.ottoeventcallback:anythreadbus:1.0.0'
 ```
 
 
-
+validThisSessionOnly vs validBetweenSessions
+--------------------------------------------
+`validThisSessionOnly` can prevent situation when event arrives when it is no longer needed/desired. For example if fetching some user data takes very long time and in the meantime he switches accounts, `EventCallback` can detect that and discard event. To do that you must setup `session id provider` in a way where it returns different values for different users. `validBetweenSessions` always delivers events and ignores `session id` value
